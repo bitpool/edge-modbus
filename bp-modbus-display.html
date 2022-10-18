@@ -1,0 +1,142 @@
+<!--
+  MIT License Copyright 2021, 2022 - Bitpool Pty Ltd
+-->
+
+<script type="text/javascript">
+
+  RED.nodes.registerType("bp-display", {
+    category: "Bitpool Modbus",
+    defaults: {
+      bpModbusDisplayName: {value: ""},
+      bpDeviceRegister: {value: ""},
+      bpChkShowDebugWarnings: {value: true},
+    },
+    inputs: 1,
+    outputs: 1,
+    color: "#00aeef",
+    icon: "bitpool.svg",
+    label: function () {
+      return this.bpModbusDisplayName || "display";
+    },
+    paletteLabel: function () {
+      return "display";
+    },
+    oneditprepare: function () {
+
+      let tabs = RED.tabs.create(
+        {
+          id: "node-input-display-tabs",
+          onchange: function (tab) {
+            $("#node-input-tabs-content").children().hide()
+            $("#" + tab.id).show()
+          }
+        })
+      tabs.addTab(
+        {
+          id: "display-options-tab",
+          label: "Options"
+        })
+
+      $("#node-input-bpModbusDisplayName").typedInput({type: 'str', types: ['str']});
+      $("#node-input-bpDeviceRegister").typedInput({type: 'num', types: ['num']})
+
+      $.getJSON('/bpModbusDevices', function (data) {
+        bpRegisterMap = data
+        var deviceList = $("#node-input-bpSelectedDevices");
+        deviceList.empty();
+        deviceList.append($("<option selected='true' disabled='disabled'></option>").val(0).text("--- select available device ---"));
+        for (var i = 0; i < bpRegisterMap.length; i++) {
+          let bpDeviceName = bpRegisterMap[i].bpUnitName + ' - [' + bpRegisterMap[i].bpModbusId + ']'
+          deviceList.append($("<option></option>").val(bpRegisterMap[i].id).text(bpDeviceName));
+        }
+      });
+
+      $("#node-input-bpSelectedRegister").append($("<option selected='true' disabled='disabled'></option>").val(0).text("--- select available register ---"));
+
+      $("#node-input-bpSelectedDevices").on('change', function (event, type, value) {
+
+        let deviceName = $(this).find("option:selected").text();
+        let deviceNodeId = $(this).val();
+        $.getJSON('/bpModbusDeviceRegisterMap/' + deviceNodeId, function (data) {
+          bpRegisterMap = data
+          var deviceList = $("#node-input-bpSelectedRegister");
+          deviceList.empty();
+          deviceList.append($("<option selected='true' disabled='disabled'></option>").val(0).text("--- select available register ---"));
+
+          for (var i = 0; i < bpRegisterMap.length; i++) {
+            let bpRegName = bpRegisterMap[i].regAddress + ' - ' + bpRegisterMap[i].regName
+            deviceList.append($("<option></option>").val(bpRegisterMap[i].regAddress).text(bpRegName));
+          }
+        });
+      });
+      $("#node-input-bpSelectedRegister").on('change', function (event, type, value) {
+        let regDisplayName = $(this).find("option:selected").text();
+        let regName = regDisplayName.split("-")[1].trim();
+        let regAddress = $(this).val();
+
+        $("#node-input-bpModbusDisplayName").typedInput('value', regName);
+        $("#node-input-bpDeviceRegister").typedInput('value', regAddress);
+
+      });      
+    },
+    oneditresize: function (size) {
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="bp-display">
+    <div class="form-row">
+      <label for="node-input-bpModbusDisplayName"><i class="icon-tag"></i>Name</label>
+      <input type="text" id="node-input-bpModbusDisplayName" placeholder="Register description">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bpDeviceRegister"><i class="icon-tag"></i>Register</label>
+        <input type="text" id="node-input-bpDeviceRegister" placeholder="1">
+    </div>
+    
+    <div class="form-row">
+      <label for="node-input-bpSelectedDevices"><i class="icon-tag"></i>Auto-Fill</label>
+      <select id="node-input-bpSelectedDevices" style="width: 420px; margin-right: 0px; margin-left: 0px;"></select>
+    </div>
+    <div class="form-row">
+      <label for="node-input-bpSelectedRegister"><i class="icon-tag"></i></label>
+      <select id="node-input-bpSelectedRegister" style="width: 420px; margin-right: 0px; margin-left: 0px;"></select>
+    </div>    
+
+    <div class='form-row node-input-display-tabs-row'>
+      <ul style='min-width:600px;margin-bottom:20px' id='node-input-display-tabs'></ul>
+    </div>
+    <div id='node-input-tabs-content'>
+      <div id='display-options-tab' style='display:none'>
+        <div class="form-row">
+          <p><u>Monitoring:</u></p>
+        </div>
+        <div class="form-row" style="display: flex;">
+          <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+            <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkShowDebugWarnings" checked>
+          </div>
+          <label id="node-label-bpChkShowDebugWarnings" for="node-input-bpChkShowDebugWarnings" style="text-align:left; vertical-align:middle; width: 100%;">Show any warnings in debug tab</label>
+        </div>
+    </div>
+  </script>
+
+<script type="text/html" data-help-name="bp-display">
+  <p>Used to quickly format and display a Modbus register value to the status text field.</p>
+  <p>This node will only work by connecting to OUTPUT of Bitpool Decode node.</p>
+  <p>The Name field can be any useful value that best represents the actual Modbus register.</p>
+  <hr style="width: 100%;">
+    <h3>How to use:</h3>
+    <ol type="1">
+      <li>Manual - enter a Name and Modbus register value or,</li>
+      <li>Auto-magic - use the drop-down menus to select a predefined node configuration.</li>
+      <li>Select 'Save'.</li>
+    </ol>
+    <hr>
+    <h3>Resources:</h3>
+    <h4><strong>Online Docs:</strong></h4>
+    <ul type="1">
+      <li><a href="https://www.bitpool.com/">bitpool.com</a> - check us out here.</li>
+      <li><a href="https://app.bitpool.com/">app.bitpool.com</a> - set up your account.</li>
+      <li><a href="https://wiki.bitpool.com/">wiki.bitpool.com</a> - find more documentation.</li>
+    </ul>
+  </script>

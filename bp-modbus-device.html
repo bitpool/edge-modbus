@@ -1,0 +1,439 @@
+<!--
+  MIT License Copyright 2021, 2022 - Bitpool Pty Ltd
+-->
+
+<script type="text/javascript">
+
+  var bpRegisterMap = [];
+  var modbusRegScaleOpts = [];
+  var modbusRegDataTypeOpts = [];
+  var modbusFuncCodesOpts = [];
+  var modbusRegUomOpts = [];
+
+  RED.nodes.registerType("bp-device", {
+    category: "Bitpool Modbus",
+
+    defaults: {
+      bpUnitName: {value: null, required: true},
+      bpModbusId: {value: "1", required: true},
+      bpRegisters: {
+        value: []
+      },
+      bpChkShowDateOnLabel: {value: true},
+      bpChkShowDebugWarnings: {value: true},
+      bpChkEnableTurboMode: {value: false},
+      bpDeviceDataSize: {value: 2},
+      bpSelectedTemplate: {value: null},
+      bpSourceTemplatesFromWeb: {value: false},
+    },
+
+    inputs: 1,
+    outputs: 1,
+    color: "#00aeef",
+    icon: "bitpool.svg",
+
+    label: function () {
+      return this.bpUnitName || "device";
+    },
+    paletteLabel: function () {
+      return "device";
+    },
+    oneditprepare: function () {
+      var node = this;
+
+      let tabs = RED.tabs.create(
+        {
+          id: "node-input-modbus-tabs",
+          onchange: function (tab) {
+            $("#node-input-tabs-content").children().hide()
+            $("#" + tab.id).show()
+          }
+        })
+      tabs.addTab(
+        {
+          id: "modbus-registers-tab",
+          label: "Registers"
+        })
+      tabs.addTab(
+        {
+          id: "modbus-options-tab",
+          label: "Options"
+        })
+
+      $("#node-input-reg-search-name").typedInput({type: 'str', types: [{icon: "fa fa-search"}]});
+      $("#node-input-reg-search-name-address").typedInput({type: 'str', types: [{icon: "fa fa-search"}]});
+      $("#node-input-bpUnitName").typedInput({type: 'str', types: ['str']})
+      $("#node-input-bpModbusId").typedInput({type: 'num', types: ['num']})
+
+      $("#node-btn-apply-register-map").click(function () {
+
+        let registerTemplateOption = $("#node-input-bpSelectedTemplate").val();
+        var template = bpRegisterMap.filter(function (map) {
+          return map.optValue == registerTemplateOption;
+        });
+        var link = template[0].link
+
+        $("#node-input-bpUnitName").typedInput('value', template[0].optTextShort);
+
+        if ($("#node-input-bpRegisters-container").editableList('items').length > 0) {
+          if (confirm("Applying this template will overwrite you existing configuration.\r\n\r\nDo you want to proceed?") == true) {
+            $.getJSON("/devices/" + link, function (data) {
+              $("#node-input-bpRegisters-container").editableList('empty');
+              for (var i = 0; i < data.length; i++) {
+                $("#node-input-bpRegisters-container").editableList('addItem', data[i]);
+              }
+              document.getElementById('node-input-reg-block-count').innerHTML = data.length
+            });
+          }
+        } else {
+          $.getJSON("/devices/" + link, function (data) {
+            $("#node-input-bpRegisters-container").editableList('empty');
+            for (var i = 0; i < data.length; i++) {
+              $("#node-input-bpRegisters-container").editableList('addItem', data[i]);
+            }
+            document.getElementById('node-input-reg-block-count').innerHTML = data.length
+          });
+        }
+      });
+
+      $("#node-input-bpUnitName").on('change', function (event, type, value) {
+        this.bpUnitName = value
+      });
+
+      $.getJSON('devices', function (data) {
+        bpRegisterMap = data
+        var deviceList = $("#node-input-bpSelectedTemplate");
+
+        deviceList.empty();
+        for (var i = 0; i < bpRegisterMap.length; i++) {
+          if (bpRegisterMap[i].optValue == node.bpSelectedTemplate) {
+            deviceList.append($("<option selected></option>").val(bpRegisterMap[i].optValue).text(bpRegisterMap[i].optText));
+          } else {
+            deviceList.append($("<option></option>").val(bpRegisterMap[i].optValue).text(bpRegisterMap[i].optText));
+          }
+        }
+      });
+
+      $('#node-input-bpRegisters-container').css('min-width', '350px').editableList(
+        {
+          addItem: function (row, index, data) {
+            var registerMap = data;
+            row.css({ overflow: 'none', whiteSpace: 'nowrap' });
+
+            let fragment = document.createDocumentFragment();
+            let regName = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regAddress = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regFunctionCode = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regMultiplier = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regSize = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regFormat = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regUom = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let regScale = $('<div/>', { class: "form-row" }).appendTo(fragment);
+            let optElem = '<option selected></option>'
+
+            $('<label/>').text("Name").appendTo(regName);
+            var registerName = $('<input/>', {class: "node-input-register-name", type: "text", placeholder: "Register Name"}).appendTo(regName)
+
+            $('<label/>').text("Address").appendTo(regAddress);
+            var registerAddress = $('<input/>', {class: "node-input-register-address", type: "text", placeholder: "100"}).appendTo(regAddress)
+
+            $('<label/>').text("Code").appendTo(regFunctionCode);
+
+            var registerFunctionCode = $('<select/>', {class: "node-input-function-code"}).appendTo(regFunctionCode);
+            for (var i = 0; i < modbusFuncCodesOpts.length; i++) {
+              registerFunctionCode.append($('<option></option>').val(modbusFuncCodesOpts[i].optValue).text(modbusFuncCodesOpts[i].optText));
+            }
+
+            $('<label/>').text("Multiplier").appendTo(regMultiplier);
+            var registerMultiplier = $('<input/>', {class: "node-input-register-multiplier", type: "text", placeholder: "1.00"}).appendTo(regMultiplier)
+
+            $('<label/>').text("Format").appendTo(regFormat);
+            var registerFormat = $('<select/>', {class: "node-input-register-format"}).appendTo(regFormat);
+            for (var i = 0; i < modbusRegDataTypeOpts.length; i++) {
+              registerFormat.append($('<option></option>').val(modbusRegDataTypeOpts[i].optValue).text(modbusRegDataTypeOpts[i].optText));
+            }
+            $('<label/>').text("Unit Name").appendTo(regUom);
+            var registerUom = $('<select/>', {class: "node-input-register-uom"}).appendTo(regUom);
+            for (var i = 0; i < modbusRegUomOpts.length; i++) {
+              registerUom.append($('<option></option>').val(modbusRegUomOpts[i].optValue).text(modbusRegUomOpts[i].optText));
+            }
+            $('<label/>').text("Unit Scale").appendTo(regScale);
+            var registerScale = $('<select/>', {class: "node-input-register-scale"}).appendTo(regScale);
+            for (var i = 0; i < modbusRegScaleOpts.length; i++) {
+              registerScale.append($('<option></option>').val(modbusRegScaleOpts[i].optValue).text(modbusRegScaleOpts[i].optText));
+            }
+
+            $('<label/>').text("Size").appendTo(regSize);
+            var registerSize = $('<input/>', {class: "node-input-register-size", type: "text", placeholder: "1"}).appendTo(regSize)
+
+            registerName.val(registerMap.name);
+            registerAddress.val(registerMap.address);
+            registerFunctionCode.val(registerMap.fnCode);
+            registerMultiplier.val(registerMap.multiplier);
+            registerFormat.val(registerMap.format);
+            registerUom.val(registerMap.uom);
+            registerScale.val(registerMap.scale);
+            registerSize.val(registerMap.size);
+            registerFunctionCode.change();
+            registerFormat.change();
+            registerUom.change();
+            registerScale.change();
+
+            row[0].appendChild(fragment);
+
+            document.getElementById('node-input-reg-block-count').innerHTML = $("#node-input-bpRegisters-container").editableList('length');
+          },
+          removeItem: function (data) {
+            document.getElementById('node-input-reg-block-count').innerHTML = $("#node-input-bpRegisters-container").editableList('length');
+          },
+          removable: true,
+          scrollOnAdd: false,
+          header: $("<div style='display:flex; padding:10px 10px 0px 5px; column-gap: 10px'>").append($.parseHTML("<div><p>Count:</p></div><div style='color: gray'><label id='node-input-reg-block-count'>0</label></div>")),
+          buttons: [{
+            label: "json",
+            icon: "fa fa-share",
+            title: "Export modbus registers as JSON to browser",
+            click: function (evt) {
+              var bpRegisters = $("#node-input-bpRegisters-container").editableList('items');
+              var mapItems = []
+              bpRegisters.each(function (i) {
+                var registerMap = $(this);
+                var mapItem = {
+                  address: Number(registerMap.find(".node-input-register-address").val()),
+                  fnCode: registerMap.find(".node-input-function-code").val(),
+                  multiplier: Number(registerMap.find(".node-input-register-multiplier").val()),
+                  format: registerMap.find(".node-input-register-format").val(),
+                  size: Number(registerMap.find(".node-input-register-size").val()),
+                  scale: registerMap.find(".node-input-register-scale").val(),
+                  uom: registerMap.find(".node-input-register-uom").val(),
+                  name: registerMap.find(".node-input-register-name").val(),
+                };
+                mapItems.push(mapItem);
+              });
+              var oMyBlob = new Blob([
+                JSON.stringify(mapItems, null, 0)
+                  .replaceAll(/\[{/gi, "[\n{")
+                  .replaceAll(/}\]/gi, "}\n]")
+                  .replaceAll(/},/gi, "},\n")
+                  .replaceAll(/{/gi, "  {")
+              ], {type: 'text/json'});
+              window.open(URL.createObjectURL(oMyBlob));
+            },
+          },
+          {
+            label: "delete",
+            icon: "fa-regular fa-trash-can",
+            title: "Delete all registers",
+            click: function (evt) {
+              $("#node-input-bpRegisters-container").editableList('empty');
+              document.getElementById('node-input-reg-block-count').innerHTML = 0
+            },
+          }
+          ]
+        })
+
+      for (var i = 0; i < this.bpRegisters.length; i++) {
+        $("#node-input-bpRegisters-container").editableList('addItem', this.bpRegisters[i]);
+      }
+      document.getElementById('node-input-reg-block-count').innerHTML = this.bpRegisters.length;
+
+    },
+    oneditsave: function () {
+      var bpRegisters = $("#node-input-bpRegisters-container").editableList('items');
+      var node = this;
+      node.bpRegisters = []
+      bpRegisters.each(function (i) {
+        var registerMap = $(this);
+        var mapItem = {
+          name: registerMap.find(".node-input-register-name").val(),
+          address: registerMap.find(".node-input-register-address").val(),
+          fnCode: registerMap.find(".node-input-function-code").val(),
+          multiplier: registerMap.find(".node-input-register-multiplier").val(),
+          format: registerMap.find(".node-input-register-format").val(),
+          uom: registerMap.find(".node-input-register-uom").val(),
+          scale: registerMap.find(".node-input-register-scale").val(),
+          size: registerMap.find(".node-input-register-size").val(),
+        };
+        node.bpRegisters.push(mapItem);
+      });
+    },
+    oneditresize: function (size) {
+      var height = size.height;
+      $('#node-input-bpRegisters-container').css("height", (height - 300) + "px");
+    }
+  })
+  function filterByName() {
+    var value = $("#node-input-reg-search-name").typedInput('value');
+    var filteredCount = $("#node-input-bpRegisters-container").editableList('filter', function (data) {
+      return data.name.toUpperCase().includes(value.toUpperCase()) == 1
+    });
+    document.getElementById('node-input-reg-block-count').innerHTML = filteredCount;
+  }
+  function filterByAddress() {
+    var value = $("#node-input-reg-search-name-address").typedInput('value');
+    var filteredCount = $("#node-input-bpRegisters-container").editableList('filter', function (data) {
+      return data.address.includes(value) == 1
+    });
+    document.getElementById('node-input-reg-block-count').innerHTML = filteredCount;
+  }
+</script>
+
+<script type="text/html" data-template-name="bp-device">
+  <div class="form-row">
+  	<label for="node-input-bpUnitName"><i class="icon-tag"></i>Name</label>
+  	<input type="text" id="node-input-bpUnitName" placeholder="device">
+  </div>
+  <div class="form-row">
+  	<label for="node-input-bpModbusId"><i class="icon-tag"></i>Modbus ID</label>
+  	<input type="text" id="node-input-bpModbusId" placeholder="1">
+  </div>
+  <div class='form-row node-input-modbus-tabs-row'>
+  	<ul style='min-width:600px;margin-bottom:20px' id='node-input-modbus-tabs'></ul>
+  </div>
+  <div id='node-input-tabs-content'>
+    <div id='modbus-registers-tab' style='display:none'>
+      <div class="form-row" style="display: flex;">
+        <select class="custom-select mr-sm-2" id="node-input-bpSelectedTemplate" style="width:100%"></select>
+        
+        <button type="submit" class="ui-button ui-corner-all ui-widget" id="node-btn-apply-register-map" style="margin-left: 15px; padding-top: 0px; padding-bottom: 0px">
+            <div style="display: flex; padding:0px 10px 0px 10px; column-gap: 5px">
+            <div>Load</div>
+          </div>
+        </button>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <input type="text" id="node-input-reg-search-name" onkeyup="filterByName()" placeholder="Filter by name" style="width: 100%; margin-right: 25px">
+        <input type="text" id="node-input-reg-search-name-address" onkeyup="filterByAddress()" placeholder="Filter by address" style="width: 100%;">
+      </div>
+      <div class='form-row node-input-bpRegisters-container-row'>
+        <ol id="node-input-bpRegisters-container"></ol>
+      </div>
+    </div>
+    <div id='modbus-options-tab' style='display:none'>
+      <div class="form-row"><p><u>General:</u></p></div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkEnableTurboMode" unchecked>
+        </div>
+        <label id="node-label-bpChkEnableTurboMode" for="node-input-bpChkEnableTurboMode" style="text-align:left; vertical-align:bottom; width: 100%;">Group register reads together in single request (experimental)</label>
+      </div>      
+      <hr>
+      <div class="form-row"><p><u>Monitoring:</u></p></div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkShowDateOnLabel" checked>
+        </div>
+        <label id="node-label-bpChkShowDateOnLabel" for="node-input-bpChkShowDateOnLabel" style="text-align:left; vertical-align:bottom; width: 100%;">Show input activity on node status</label>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkShowDebugWarnings" checked>
+        </div>
+        <label id="node-label-bpChkShowDebugWarnings" for="node-input-bpChkShowDebugWarnings" style="text-align:left; vertical-align:middle; width: 100%;">Show any warnings in debug tab</label>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="bp-device">
+  <p>Use this node to select one of the pre-configured Modbus register templates, or define your own from scratch.</p>
+  <hr style="width: 100%;">
+  <h3>How to use:</h3>
+  <ol type="1">
+    <li>Select a predefined Modbus register template, then click 'Apply' - else create your own.</li>
+    <li>Enter a valid Modbus Address ID for the target device.</li>
+    <li>Review the map and make changes if required, then 'Save'.</li>
+    <li>Link a default inject node to the INPUT and set frequency.</li>
+    <li>Link OUTPUT to a Bitpool Reader node.</li>
+  </ol>
+  <hr>
+  <h3>Functionality:</h3>
+  <h4><strong>On Inject:</strong></h4>
+  <ol type="1">
+    <li>Will send all user defined Modbus registers to the Reader node for processing.</li>
+  </ol>
+  <hr>
+  <h3>Resources:</h3>
+  <h4><strong>Online Docs:</strong></h4>
+  <ul type="1">
+    <li><a href="https://www.bitpool.com/">bitpool.com</a> - check us out here.</li>
+    <li><a href="https://app.bitpool.com/">app.bitpool.com</a> - set up your account.</li>
+    <li><a href="https://wiki.bitpool.com/">wiki.bitpool.com</a> - find more documentation.</li>
+  </ul>
+</script>
+
+<script type="text/javascript">
+  var modbusFuncCodesOpts = [
+    {optValue: "F1_READ_COILS", optText: "FC1: Read Status Coils"},
+    {optValue: "F2_INPUT_COILS", optText: "FC2: Input Status Colis"},
+    {optValue: "F3_HOLDING_REGS", optText: "FC3: Holding Registers"},
+    {optValue: "F4_INPUT_REGS", optText: "FC4: Input Registers"}
+  ];
+  var modbusRegDataTypeOpts = [
+    {optValue: "8BIT_INT", optText: "8bit Integer"},
+    {optValue: "8BIT_UINT", optText: "8bit Unsigned Integer"},
+    {optValue: "16BIT_INT_HI_FIRST", optText: "16bit Integer (12)"},
+    {optValue: "16BIT_INT_LOW_FIRST", optText: "16bit Integer (21)"},
+    {optValue: "16BIT_UINT_HI_FIRST", optText: "16bit Unsigned Integer (12)"},
+    {optValue: "16BIT_UINT_LOW_FIRST", optText: "16bit Unsigned Integer (21)"},
+    {optValue: "32BIT_FLOAT_1234", optText: "32bit Float (1234)"},
+    {optValue: "32BIT_FLOAT_4321", optText: "32bit Float (4321)"},
+    {optValue: "32BIT_FLOAT_2143", optText: "32bit Float (2143)"},
+    {optValue: "32BIT_FLOAT_3412", optText: "32bit Float (3412)"},
+    {optValue: "32BIT_INT_1234", optText: "32bit Integer (1234)"},
+    {optValue: "32BIT_INT_4321", optText: "32bit Integer (4321)"},
+    {optValue: "32BIT_INT_2143", optText: "32bit Integer (2143)"},
+    {optValue: "32BIT_INT_3412", optText: "32bit Integer (3412)"},
+    {optValue: "32BIT_UINT_1234", optText: "32bit Unsigned Integer (1234)"},
+    {optValue: "32BIT_UINT_4321", optText: "32bit Unsigned Integer (4321)"},
+    {optValue: "32BIT_UINT_2143", optText: "32bit Unsigned Integer (2143)"},
+    {optValue: "32BIT_UINT_3412", optText: "32bit Unsigned Integer (3412)"},
+    {optValue: "64BIT_INT_12345678", optText: "64Bit Integer (12345678)"},
+    {optValue: "64BIT_INT_56781234", optText: "64Bit Integer (56781234)"},
+    {optValue: "64BIT_UINT_12345678", optText: "64Bit Unsigned Integer (12345678)"},
+    {optValue: "64BIT_UINT_56781234", optText: "64Bit Unsigned Integer (56781234)"},
+    {optValue: "ASCII", optText: "ASCII String"}
+  ];
+  var modbusRegUomOpts = [
+    {optValue: "NONE", optText: "None"},
+    {optValue: "VOLTAGE_V", optText: "Volts (V)"},
+    {optValue: "CURRENT_A", optText: "Amperes (A)"},
+    {optValue: "POWER_ACTIVE_P", optText: "Watts (W)"},
+    {optValue: "POWER_REACTIVE_Q", optText: "Voltampere Reactive (var)"},
+    {optValue: "POWER_APPARENT_S", optText: "Voltampere (VA)"},
+    {optValue: "POWER_FACTOR", optText: "Power Factor"},
+    {optValue: "ENERGY_ACTIVE_P", optText: "Watt Hour (Wh)"},
+    {optValue: "ENERGY_REACTIVE_Q", optText: "Voltampere Reactive Hour (varh)"},
+    {optValue: "ENERGY_APPARENT_S", optText: "Voltampere  Hour (VAh)"},
+    {optValue: "FREQUENCY_HZ", optText: "Hertz (Hz)"},
+    {optValue: "TEMPERATURE_C", optText: "Celsius (Â°C)"},
+    {optValue: "TEMPERATURE_F", optText: "Farenheit (Â°F)"},
+    {optValue: "VOLTAGE_PHASE_SEQ", optText: "Voltage Phase Sequence"},
+    {optValue: "PERCENT", optText: "Percent (%)"},
+    {optValue: "RPM", optText: "Revolutions per Minute"},
+    {optValue: "VOLUME_M3", optText: "Cubic Meters (mÂ³)"},
+    {optValue: "FLOW_M3_PER_SEC", optText: "Cubic Meters per Second (mÂ³/s)"},
+    {optValue: "FLOW_M3_PER_HOUR", optText: "Cubic Meters per Hour (mÂ³/h)"},
+    {optValue: "VOLUME_LITERS", optText: "Liters (L)"},
+    {optValue: "FLOW_LITERS_PER_SECS", optText: "Liters per Seconds (L/s)"},
+    {optValue: "FLOW_LITERS_PER_HOUR", optText: "Liters per Seconds (L/h)"},
+    {optValue: "PRESSURE_BAR", optText: "Pressure Bars (bar)"},
+    {optValue: "PRESSURE_PASCAL", optText: "Pressure Pascal (Pa)"},
+    {optValue: "TIME_MSECS", optText: "Milliseconds (ms)"},
+    {optValue: "TIME_SECS", optText: "Seconds (s)"},
+    {optValue: "TIME_HOUR", optText: "Hours (h)"},
+    {optValue: "TIME_DAY", optText: "Days (d)"},
+    {optValue: "TIME_WEEK", optText: "Week (wk)"},
+    {optValue: "TIME_MONTH", optText: "Month (mth)"},
+    {optValue: "TIME_YEAR", optText: "Year (yr)"},
+    {optValue: "BINARY", optText: "Binary Data"},
+  ];
+  var modbusRegScaleOpts = [
+    {optValue: "NONE", optText: "None"},
+    {optValue: "MICRO", optText: "Micro (Âµ) "},
+    {optValue: "MILLI", optText: "Milli (m)"},
+    {optValue: "KILO", optText: "Kilo (K)"},
+    {optValue: "MEGA", optText: "Mega (M)"},
+    {optValue: "GIGA", optText: "Giga (G)"},
+  ];
+</script>

@@ -1,0 +1,653 @@
+[
+    {
+        "id": "e8357fe0f9a8a9de",
+        "type": "bp-device",
+        "z": "32d4f3da7ed0f7fd",
+        "bpUnitName": "ABB B23 B24",
+        "bpModbusId": "6",
+        "bpRegisters": [
+            {
+                "name": "VOLTAGE_L1_VOLTS",
+                "address": "23296",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "VOLTAGE_L2_VOLTS",
+                "address": "23298",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "VOLTAGE_L3_VOLTS",
+                "address": "23300",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "VOLTAGE_L1L2_VOLTS",
+                "address": "23302",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "VOLTAGE_L2L3_VOLTS",
+                "address": "23304",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "VOLTAGE_L3L1_VOLTS",
+                "address": "23306",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.1",
+                "format": "32BIT_UINT_1234",
+                "uom": "VOLTAGE_V",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "CURRENT_L1_AMPS",
+                "address": "23308",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "32BIT_UINT_1234",
+                "uom": "CURRENT_A",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "CURRENT_L2_AMPS",
+                "address": "23310",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "32BIT_UINT_1234",
+                "uom": "CURRENT_A",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "CURRENT_L3_AMPS",
+                "address": "23312",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "32BIT_UINT_1234",
+                "uom": "CURRENT_A",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "CURRENT_N_AMPS",
+                "address": "23314",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "32BIT_UINT_1234",
+                "uom": "CURRENT_A",
+                "scale": "NONE",
+                "size": "2"
+            },
+            {
+                "name": "POWER_TOTAL_KW",
+                "address": "23316",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_ACTIVE_P",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L1_KW",
+                "address": "23318",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_ACTIVE_P",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L2_KW",
+                "address": "23320",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_ACTIVE_P",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L3_KW",
+                "address": "23322",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_ACTIVE_P",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_TOTAL_KVAR",
+                "address": "23324",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L1_KVAR",
+                "address": "23326",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L2_KVAR",
+                "address": "23328",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L3_KVAR",
+                "address": "23330",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_TOTAL_KVA",
+                "address": "23332",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_APPARENT_S",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L1_KVA",
+                "address": "23334",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_APPARENT_S",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L2_KVA",
+                "address": "23336",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_APPARENT_S",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "POWER_L3_KVA",
+                "address": "23338",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.00001",
+                "format": "32BIT_INT_1234",
+                "uom": "POWER_APPARENT_S",
+                "scale": "KILO",
+                "size": "2"
+            },
+            {
+                "name": "FREQUENCY_HZ",
+                "address": "23340",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "16BIT_UINT_HI_FIRST",
+                "uom": "FREQUENCY_HZ",
+                "scale": "NONE",
+                "size": "1"
+            },
+            {
+                "name": "POWER_FACTOR_TOTAL",
+                "address": "23354",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.001",
+                "format": "16BIT_INT_HI_FIRST",
+                "uom": "POWER_FACTOR",
+                "scale": "NONE",
+                "size": "1"
+            },
+            {
+                "name": "POWER_FACTOR_L1",
+                "address": "23355",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.001",
+                "format": "16BIT_INT_HI_FIRST",
+                "uom": "POWER_FACTOR",
+                "scale": "NONE",
+                "size": "1"
+            },
+            {
+                "name": "POWER_FACTOR_L2",
+                "address": "23356",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.001",
+                "format": "16BIT_INT_HI_FIRST",
+                "uom": "POWER_FACTOR",
+                "scale": "NONE",
+                "size": "1"
+            },
+            {
+                "name": "POWER_FACTOR_L3",
+                "address": "23357",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.001",
+                "format": "16BIT_INT_HI_FIRST",
+                "uom": "POWER_FACTOR",
+                "scale": "NONE",
+                "size": "1"
+            },
+            {
+                "name": "ENERGY_IMP_TOTAL_KWH",
+                "address": "20480",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_EXP_TOTAL_KWH",
+                "address": "20484",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_TOTAL_KWH",
+                "address": "20488",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_IMP_TOTAL_KVARH",
+                "address": "20492",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_EXP_TOTAL_KVARH",
+                "address": "20496",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_TOTAL_KVARH",
+                "address": "20500",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_IMP_TOTAL_KVAH",
+                "address": "20504",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_EXP_TOTAL_KVAH",
+                "address": "20508",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_UINT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_TOTAL_KVAH",
+                "address": "20512",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L1_KWH",
+                "address": "21624",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L2_KWH",
+                "address": "21628",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L3_KWH",
+                "address": "21632",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_ACTIVE_P",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L1_KVARH",
+                "address": "21660",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L2_KVARH",
+                "address": "21664",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L3_KVARH",
+                "address": "21668",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_REACTIVE_Q",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L1_KVAH",
+                "address": "21696",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L2_KVAH",
+                "address": "21700",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            },
+            {
+                "name": "ENERGY_L3_KVAH",
+                "address": "21704",
+                "fnCode": "F3_HOLDING_REGS",
+                "multiplier": "0.01",
+                "format": "64BIT_INT_12345678",
+                "uom": "ENERGY_APPARENT_S",
+                "scale": "KILO",
+                "size": "4"
+            }
+        ],
+        "bpChkShowDateOnLabel": true,
+        "bpChkShowDebugWarnings": true,
+        "bpChkEnableTurboMode": false,
+        "bpDeviceDataSize": 2,
+        "bpSelectedTemplate": "DEVICE_ABB_2324",
+        "bpSourceTemplatesFromWeb": false,
+        "x": 320,
+        "y": 260,
+        "wires": [
+            [
+                "4ea09c2f563e3ea4"
+            ]
+        ]
+    },
+    {
+        "id": "344a3731ee831066",
+        "type": "inject",
+        "z": "32d4f3da7ed0f7fd",
+        "name": "Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "e8357fe0f9a8a9de"
+            ]
+        ]
+    },
+    {
+        "id": "f2b10f786e7fdb58",
+        "type": "bp-display",
+        "z": "32d4f3da7ed0f7fd",
+        "bpModbusDisplayName": "VOLTAGE_L1_VOLTS",
+        "bpDeviceRegister": "23296",
+        "bpChkShowDebugWarnings": true,
+        "x": 1030,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4ea26208040dbc04",
+        "type": "bp-display",
+        "z": "32d4f3da7ed0f7fd",
+        "bpModbusDisplayName": "VOLTAGE_L2_VOLTS",
+        "bpDeviceRegister": "23298",
+        "bpChkShowDebugWarnings": true,
+        "x": 1030,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f8286a6f82c7425d",
+        "type": "bp-display",
+        "z": "32d4f3da7ed0f7fd",
+        "bpModbusDisplayName": "VOLTAGE_L3_VOLTS",
+        "bpDeviceRegister": "23300",
+        "bpChkShowDebugWarnings": true,
+        "x": 1030,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6bec49fb077c0ad7",
+        "type": "bp-decoder",
+        "z": "32d4f3da7ed0f7fd",
+        "bpDeviceDecoderName": "",
+        "bpChkShowDateOnLabel": true,
+        "bpChkShowDebugWarnings": true,
+        "bpChkConvertPFactor": true,
+        "bpChkSetRealTo3Dp": true,
+        "x": 670,
+        "y": 260,
+        "wires": [
+            [
+                "13df38b744befb81"
+            ]
+        ]
+    },
+    {
+        "id": "35acc8ccf080f823",
+        "type": "bp-display",
+        "z": "32d4f3da7ed0f7fd",
+        "bpModbusDisplayName": "FREQUENCY_HZ",
+        "bpDeviceRegister": "23340",
+        "bpChkShowDebugWarnings": true,
+        "x": 1020,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c59a259e064a7a73",
+        "type": "link in",
+        "z": "32d4f3da7ed0f7fd",
+        "name": "",
+        "links": [
+            "13df38b744befb81"
+        ],
+        "x": 845,
+        "y": 260,
+        "wires": [
+            [
+                "f2b10f786e7fdb58",
+                "4ea26208040dbc04",
+                "f8286a6f82c7425d",
+                "35acc8ccf080f823"
+            ]
+        ]
+    },
+    {
+        "id": "13df38b744befb81",
+        "type": "link out",
+        "z": "32d4f3da7ed0f7fd",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "c59a259e064a7a73",
+            "334ad999f644c423",
+            "341537da535dae50",
+            "b033ff94735d125d"
+        ],
+        "x": 765,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "4ea09c2f563e3ea4",
+        "type": "bp-reader",
+        "z": "32d4f3da7ed0f7fd",
+        "name": "Modbus Con",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "0c19b1f39cce70c5",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": true,
+        "x": 510,
+        "y": 260,
+        "wires": [
+            [
+                "6bec49fb077c0ad7"
+            ]
+        ]
+    },
+    {
+        "id": "0c19b1f39cce70c5",
+        "type": "bp-modbus-client",
+        "name": "serial-test-connection",
+        "clienttype": "serial",
+        "bufferCommands": true,
+        "tcpHost": "127.0.0.1",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB0",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true
+    }
+]

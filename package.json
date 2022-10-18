@@ -1,0 +1,59 @@
+{
+    "name": "@bitpoolos/edge-modbus",
+    "version": "1.0.0",
+    "description": "A set of Node-RED modules to support reading Modbus devices.",
+    "dependencies": {
+        "@xstate/fsm": "~1.6.4",
+        "bson": "~4.6.1",
+        "debug": "~4.3.2",
+        "line-by-line": "~0.1.6",
+        "modbus-serial": "~8.0.5"
+    },
+    "optionalDependencies": {
+        "@serialport/list": "^9.0.0",
+        "serialport": "^9.0.0"
+    },
+    "node-red": {
+        "version": ">=2.2.2",
+        "nodes": {
+            "bp-modbus-device": "bp-modbus-device.js",
+            "bp-modbus-reader": "bp-modbus-reader.js",
+            "bp-modbus-decoder": "bp-modbus-decoder.js",
+            "bp-modbus-display": "bp-modbus-display.js",
+            "bp-modbus-io-config": "bp-modbus-io-config.js",
+            "bp-modbus-client": "bp-modbus-client.js"
+        }
+    },
+    "keywords": [
+        "node-red",
+        "bitpool",
+        "bitpoolos",
+        "edge",
+        "modbus",
+        "rtu",
+        "ascii",
+        "tcp",
+        "serial",
+        "iot"
+    ],
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "author": {
+        "name": "bitpool-dev",
+        "email": "dev@bitpool.com"
+    },
+    "license": "MIT",
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "bugs": {
+        "url": "https://github.com/bitpool/edge-modbus/issues"
+    },
+    "homepage": "https://github.com/bitpool/edge-modbus#readme",        
+    "repository": {
+        "type": "github",
+        "url": "git+https://github.com/bitpool/edge-modbus.git"
+    }
+}

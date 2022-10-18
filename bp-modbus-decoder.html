@@ -1,0 +1,153 @@
+<!--
+  MIT License Copyright 2021, 2022 - Bitpool Pty Ltd
+-->
+
+<script type="text/javascript">
+
+  RED.nodes.registerType("bp-decoder", {
+    category: "Bitpool Modbus",
+    defaults: {
+      bpDeviceDecoderName: {value: ""},
+      bpChkShowDateOnLabel: {value: true},
+      bpChkShowDebugWarnings: {value: true},
+      bpChkConvertPFactor: {value: true},
+      bpChkSetRealTo3Dp: {value: true},
+    },
+    inputs: 1,
+    outputs: 1,
+    color: "#00aeef",
+    icon: "bitpool.svg",
+    label: function () {
+      return this.bpDeviceDecoderName || "decoder";
+    },
+    paletteLabel: function () {
+      return "decoder";
+    },
+    oneditprepare: function () {
+
+      let tabs = RED.tabs.create(
+        {
+          id: "node-input-decoder-tabs",
+          onchange: function (tab) {
+            $("#node-input-tabs-content").children().hide()
+            $("#" + tab.id).show()
+          }
+        })
+      tabs.addTab(
+        {
+          id: "decoder-options-tab",
+          label: "Options"
+        })
+      $("#node-input-bpDeviceDecoderName").typedInput({type: 'str', types: ['str']});
+
+    },
+    oneditresize: function (size) {
+      var height = size.height;
+      $('#node-input-bpDecoder-container').css("height", (height - 200) + "px");
+    }
+  });
+</script>
+
+<style></style>
+
+<script type="text/html" data-template-name="bp-decoder">
+  <div class="form-row">
+    <label for="node-input-bpDeviceDecoderName"><i class="icon-tag"></i>Name</label>
+    <input type="text" id="node-input-bpDeviceDecoderName" placeholder="decoder">
+  </div>
+  <div class='form-row node-input-decoder-tabs-row'>
+    <ul style='min-width:600px;margin-bottom:20px' id='node-input-decoder-tabs'></ul>
+  </div>
+  <div id='node-input-tabs-content'>
+    <div id='decoder-options-tab' style='display:none'>
+      <div class="form-row">
+        <p><u>Monitoring:</u></p>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkShowDateOnLabel" checked>
+        </div>
+        <label id="node-label-bpChkShowDateOnLabel" for="node-input-bpChkShowDateOnLabel" style="text-align:left; vertical-align:bottom; width: 100%;">Show input activity on node status</label>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkShowDebugWarnings" checked>
+        </div>
+        <label id="node-label-bpChkShowDebugWarnings" for="node-input-bpChkShowDebugWarnings" style="text-align:left; vertical-align:middle; width: 100%;">Show any warnings in debug tab</label>
+      </div>
+      <div class="form-row">
+        <p><u>Value Converters:</u></p>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkConvertPFactor" checked>
+        </div>
+        <label id="node-label-bpChkConvertPFactor" for="node-input-bpChkConvertPFactor" style="text-align:left; vertical-align:bottom; width: 100%;">Convert Power Factor from complex multi-quadrant values</label>
+      </div>
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-input-bpChkSetRealTo3Dp" checked>
+        </div>
+        <label id="node-label-bpChkSetRealTo3Dp" for="node-input-bpChkSetRealTo3Dp" style="text-align:left; vertical-align:bottom; width: 100%;">Force real values to 3 decimal places</label>
+      </div>      
+
+    </div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="bp-decoder">
+  <p>Decodes input byte array to usable engineering values.</p>
+  <hr style="width: 100%;">
+  <h3>How to use:</h3>
+  <ol type="1">
+    <li>Enter node name if required.</li>
+    <li>Link INPUT to Bitpool Reader node.</li>
+    <li>Link OUTPUT to down-stream node which support topic/pair inputs (optional).</li>
+  </ol>
+  <hr>
+  <h3>Supported Types:</h3>
+  <h4><strong>16bit Integer:</strong></h4>
+  <ol type="1">
+    <li>8BIT_INT - Big Endian</li>
+    <li>8BIT_UINT - Big Endian</li>
+    <li>16BIT_INT_HI_FIRST - Big Endian</li>
+    <li>16BIT_INT_LOW_FIRST - Little Endian</li>
+    <li>16BIT_UINT_HI_FIRST - Big Endian</li>
+    <li>16BIT_UINT_LOW_FIRST - Little Endian</li>
+  </ol>
+  <h4><strong>32bit Integer:</strong></h4>
+  <ol type="1">
+    <li>32BIT_INT_1234 - Big Endian</li>
+    <li>32BIT_INT_3412 - Big Endian, swapped word</li>
+    <li>32BIT_INT_4321 - Little Endian</li>
+    <li>32BIT_INT_2143 - Little Endian, swapped word</li>
+    <li>32BIT_UINT_1234 - Big Endian</li>
+    <li>32BIT_UINT_3412 - Big Endian, swapped word</li>
+    <li>32BIT_UINT_4321 - Little Endian</li>
+    <li>32BIT_UINT_2143 - Little Endian, swapped word</li>
+  </ol>
+  <h4><strong>64bit Integer:</strong></h4>
+  <ol type="1">
+    <li>64BIT_INT_12345678 - Big Endian</li>
+    <li>64BIT_INT_56781234 - Little Endian, swapped</li>
+  </ol>
+  <h4><strong>Floating Point:</strong></h4>
+  <ol type="1">
+    <li>32BIT_FLOAT_1234 - Big Endian</li>
+    <li>32BIT_FLOAT_4312 - Big Endian, swapped word</li>
+    <li>32BIT_FLOAT_4321 - Little Endian</li>
+    <li>32BIT_FLOAT_2143 - Little Endian, swapped word</li>
+  </ol>
+  <h4><strong>String:</strong></h4>
+  <ol type="1">
+    <li>ASCII - string</li>
+  </ol>
+  <hr>
+  <h3>Resources:</h3>
+  <h4><strong>Online Docs:</strong></h4>
+  <ul type="1">
+    <li><a href="https://www.bitpool.com/">bitpool.com</a> - check us out here.</li>
+    <li><a href="https://app.bitpool.com/">app.bitpool.com</a> - set up your account.</li>
+    <li><a href="https://wiki.bitpool.com/">wiki.bitpool.com</a> - find more documentation.</li>
+  </ul>
+</script>

@@ -1,0 +1,154 @@
+<!--
+  MIT License Copyright 2021, 2022 - Bitpool Pty Ltd
+-->
+
+<script type="text/javascript">
+  RED.nodes.registerType("bp-reader", {
+    category: "Bitpool Modbus",
+    defaults: {
+      name: { value: null },
+      showStatusActivities: { value: true },
+      showErrors: { value: true },
+      logIOActivities: { value: false },
+      server: { type: 'bp-modbus-client', required: true },
+      useIOFile: { value: false },
+      ioFile: { value: '', type: 'bp-modbus-io-config', required: false },
+      useIOForPayload: { value: false },
+      emptyMsgOnFail: { value: false },
+      keepMsgProperties: { value: true }
+    },
+    inputs: 1,
+    outputs: 1,
+    color: "#00aeef",
+    icon: "bitpool.svg",
+    label: function () {
+      return this.name || "reader";
+    },
+    paletteLabel: function () {
+      return "reader";
+    },
+    oneditprepare: function () {
+      var node = this;
+
+      let tabs = RED.tabs.create({
+        id: "node-input-modbus-tabs",
+        onchange: function (tab) {
+          $("#node-input-tabs-content").children().hide()
+          $("#" + tab.id).show()
+        }
+      })
+
+      tabs.addTab({
+        id: "modbus-settings-tab",
+        label: this._("bp-modbus-contrib.tabs-label.settings")
+      })
+
+      $("#node-input-name").typedInput({ type: 'str', types: ['str'] })
+      $("#node-input-name").on('change', function (event, type, value) {
+        node.name = value
+      });      
+
+      let useIOFileCheckbox = $('#node-input-useIOFile')
+      let modbusiofileRow = $('#modbusiofile-row')
+
+      useIOFileCheckbox.change(function () {
+        if ($(this).is(':checked')) {
+          modbusiofileRow.show()
+        } else {
+          modbusiofileRow.hide()
+        }
+      })
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="bp-reader">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+        <ul style="min-width: 600px; margin-bottom: 20px;" id="node-input-modbus-tabs"></ul>
+    </div>
+    <div id="node-input-tabs-content" style="min-height: 170px;">
+        <div id="modbus-settings-tab" style="display:none">
+            <div class="form-row" style="display: flex;">
+                <input type="text" id="node-input-server" style="width: 100%;">
+            </div>
+        </div>
+        <div id="modbus-options-tab" style="display:none">
+            <div class="form-row">
+                <label style="min-width:160px" for="node-input-emptyMsgOnFail"><i class="fa fa-th"></i> <span
+                data-i18n="bp-modbus-contrib.label.emptyMsgOnFail"></span></label>
+                <input type="checkbox" id="node-input-emptyMsgOnFail" style="max-width:30px">
+            </div>
+            <div class="form-row">
+                <label style="min-width:160px" for="node-input-keepMsgProperties"><i class="fa fa-th"></i> <span
+                data-i18n="bp-modbus-contrib.label.keepMsgProperties"></span></label>
+                <input type="checkbox" id="node-input-keepMsgProperties" style="max-width:30px">
+            </div>
+            <div class="form-row">
+                <label style="min-width:160px" for="node-input-showStatusActivities"><i class="fa fa-th"></i> <span
+                data-i18n="bp-modbus-contrib.label.showActivities"></span></label>
+                <input type="checkbox" id="node-input-showStatusActivities" style="max-width:30px">
+            </div>
+            <div class="form-row">
+                <label style="min-width:160px" for="node-input-showErrors"><i class="fa fa-th"></i> <span
+                data-i18n="bp-modbus-contrib.label.showErrors"></span></label>
+                <input type="checkbox" id="node-input-showErrors" style="max-width:30px">
+            </div>
+            <hr>
+            <div class="form-row">
+                <label style="min-width:160px" for="node-input-useIOFile"><i class="fa fa-file-code-o"></i> <span
+                data-i18n="bp-modbus-contrib.label.useIOFile"></span></label>
+                <input type="checkbox" id="node-input-useIOFile" style="max-width:30px">
+            </div>
+            <div id="modbusiofile-row">
+                <div class="form-row">
+                    <label style="min-width:160px" for="node-input-logIOActivities"><i class="fa fa-th"></i> <span
+                    data-i18n="bp-modbus-contrib.label.logIOActivities"></span></label>
+                    <input type="checkbox" id="node-input-logIOActivities" style="max-width:30px">
+                </div>
+                <div class="form-row">
+                    <label style="min-width:160px" for="node-input-useIOForPayload"><i class="fa fa-comment-o"></i> <span data-i18n="bp-modbus-contrib.label.useIOForPayload"></span></label>
+                    <input type="checkbox" id="node-input-useIOForPayload" style="max-width:30px">
+                </div>
+                <div class="form-row">
+                    <label for="node-input-ioFile"><i class="icon-file"></i> <span data-i18n="bp-modbus-contrib.label.ioFile"></span></label>
+                    <input type="text" id="node-input-ioFile">
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="bp-reader">
+    <p>
+        Allows the reading of a Modbus device with user defined input object.
+    </p>
+    <p>Connects to a Modbus device via TCP or serial connection.</p>
+    <p>
+        <h4>Function codes (1-4):</h4>
+        <ul>
+          <li>FC 1: Read Coil Status</li>
+          <li>FC 2: Read Input Status</li>
+          <li>FC 3: Read Holding Registers</li>
+          <li>FC 4: Read Input Registers</li>
+        </ul>
+     </p>
+
+     <p>Input object code example:</p>
+     <code>
+        msg.payload = { value: msg.payload, 'fc': 1, 'unitid': 1, 'address': 0 , 'quantity': 1 }
+        return msg
+     </code>
+     <hr>
+     <h3>Resources:</h3>
+     <h4><strong>Online Docs:</strong></h4>
+     <ul type="1">
+       <li><a href="https://www.bitpool.com/">bitpool.com</a> - check us out here.</li>
+       <li><a href="https://app.bitpool.com/">app.bitpool.com</a> - set up your account.</li>
+       <li><a href="https://wiki.bitpool.com/">wiki.bitpool.com</a> - find more documentation.</li>
+     </ul>
+</script>
