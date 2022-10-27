@@ -268,39 +268,23 @@ module.exports = function (RED) {
   });
 
   RED.httpAdmin.get('/devices/:device', function (req, res) {
-    if (req.params.device == 'device-abb-2324') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-abb-m2m') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-abb-m4m') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-carlo-em21') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-carlo-em24') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-carlo-em270-1') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-carlo-em270-2') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-circutor-afq') {
+    if (req.params.device == 'device-circutor-afq') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
     } else if (req.params.device == 'device-comap-inteligen-200') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-crompton-integra-ci3') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-crompton-integra-dl1-1') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-crompton-integra-dl1-2') {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-electrex-femto-d4') {
+    } else if (req.params.device == 'device-crompton-integra-2270') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
     } else if (req.params.device == 'device-moxa-e1210') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-schneider-pm3250') {
+    } else if (req.params.device == 'device-schneider-iem3250') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-socomec-countis-e43') {
+    } else if (req.params.device == 'device-schneider-powertag-1p') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } else if (req.params.device == 'device-socomec-diris-a10') {
+    } else if (req.params.device == 'device-schneider-powertag-3p') {
+      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
+    } else if (req.params.device == 'device-schneider-powertag-a9mem1540') {
+      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
+    } else if (req.params.device == 'device-schneider-powertag-a9mem1580') {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
     }
   });
