@@ -1,6 +1,13 @@
 
 module.exports.DeviceTemplateTypes = [
   {
+    optValue: 'DEVICE_ABB_M4M',
+    optText: 'ABB M4M Meter',
+    optTextShort: 'ABB M4M',
+    link: 'device-abb-m4m',    
+    dataSize: 2,
+  },
+  {
     optValue: 'DEVICE_CIRCUTOR_AFQ',
     optText: 'Circutor AFQ Multi Function Filter Controller',
     optTextShort: 'Circutor AFQ',
