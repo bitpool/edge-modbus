@@ -16,7 +16,7 @@ Use the procedures below to install Bitpool-Edge Modbus nodes onto your running 
 
 ## Installation
 
-Install using the Node-RED palette manager,
+Install the module using the Node-RED palette manager,
 
 
 ```javascript
