@@ -10,7 +10,7 @@ A selection of Node-RED nodes for reading Modbus devices.
 
 ## Getting Started 
 
-Use the following procedures below to install Bitpool-Edge Modbus nodes onto your running instance. Then either use the Node-RED help, or read the [wiki](https://wiki.bitpool.com/en/edge/apps/bitpool-edge/nr-modbus) page to get you started on your next new project.
+Use the following procedures below to install Bitpool-Edge Modbus nodes onto your running instance. Then either use the Node-RED help, or read the [wiki](https://wiki.bitpool.com/en/edge/apps/bitpool-edge/nr-modbus) page to get you started on your next new project
 
 *- Examples are available using the Import->Examples->Flows menu.*
 
