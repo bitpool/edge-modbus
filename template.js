@@ -72,7 +72,7 @@ module.exports.DeviceTemplateTypes = [
   },    
   {
     optValue: 'DEVICE_SOCOMEC_DIRIS_A10',
-    optText: 'Socomec Diris A10 Meter ~',
+    optText: 'Socomec Diris A10 Meter',
     optTextShort: 'Socomec A10',
     link: 'device-socomec-diris-a10',    
     dataSize: 2,
