@@ -279,7 +279,8 @@ module.exports = function (RED) {
       req.params.device == 'device-schneider-powertag-1p' ||
       req.params.device == 'device-schneider-powertag-3p' ||
       req.params.device == 'device-schneider-powertag-a9mem1540' ||
-      req.params.device == 'device-schneider-powertag-a9mem1580'
+      req.params.device == 'device-schneider-powertag-a9mem1580' ||
+      req.params.device == 'device-socomec-diris-a10'
     ) {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
     } 
