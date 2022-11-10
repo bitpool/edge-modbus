@@ -5,7 +5,7 @@
 
 ## About
 
-A selection of Node-RED nodes for reading Modbus devices.
+A selection of Node-RED nodes for reading Modbus devices
 
 
 ## Getting Started 
