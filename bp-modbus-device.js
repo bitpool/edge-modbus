@@ -272,6 +272,7 @@ module.exports = function (RED) {
     if (
       req.params.device == 'device-abb-m4m' ||
       req.params.device == 'device-circutor-afq' ||
+      req.params.device == 'device-circutor-cvm-e3-mini' ||
       req.params.device == 'device-comap-inteligen-200' ||
       req.params.device == 'device-crompton-integra-2270' ||
       req.params.device == 'device-moxa-e1210' ||
@@ -280,7 +281,8 @@ module.exports = function (RED) {
       req.params.device == 'device-schneider-powertag-3p' ||
       req.params.device == 'device-schneider-powertag-a9mem1540' ||
       req.params.device == 'device-schneider-powertag-a9mem1580' ||
-      req.params.device == 'device-socomec-diris-a10'
+      req.params.device == 'device-socomec-diris-a10' ||
+      req.params.device == 'device-socomec-diris-a30'
     ) {
       res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
     } 
