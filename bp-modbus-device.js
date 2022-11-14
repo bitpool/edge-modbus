@@ -191,12 +191,6 @@ module.exports = function (RED) {
     );
     registerMap[register.address] = msg;
   };
-  function getRegister(registerMap, address) {
-    if (registerMap.hasOwnProperty(address)) {
-      return registerMap[address];
-    }
-    return false;
-  };
   function buildMsg(
     unitName,
     modbusId,

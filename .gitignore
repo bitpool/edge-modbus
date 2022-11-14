@@ -2,6 +2,10 @@
 node_modules/
 dist/
 
+# Jest Testing
+coverage/
+*test.js
+
 # Compiled Java class files
 *.class
 

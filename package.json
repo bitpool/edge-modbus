@@ -1,6 +1,6 @@
 {
     "name": "@bitpoolos/edge-modbus",
-    "version": "1.0.28",
+    "version": "1.0.30",
     "description": "A set of Node-RED modules to support reading Modbus devices.",
     "dependencies": {
         "@xstate/fsm": "~1.6.4",
@@ -51,9 +51,15 @@
     "bugs": {
         "url": "https://github.com/bitpool/edge-modbus/issues"
     },
-    "homepage": "https://github.com/bitpool/edge-modbus#readme",        
+    "homepage": "https://github.com/bitpool/edge-modbus#readme",
     "repository": {
         "type": "github",
         "url": "git+https://github.com/bitpool/edge-modbus.git"
+    },
+    "devDependencies": {
+        "jest": "^29.3.1"
+    },
+    "scripts":{
+        "test": "jest"
     }
 }
