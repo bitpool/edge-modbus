@@ -1,4 +1,4 @@
-<!--
+<!--bufferCommands
  Copyright (c) 2016,2017,2018,2019,2020,2021 Klaus Landsdorf (https://bianco-royal.space/)
  Copyright 2016 - Jason D. Harper, Argonne National Laboratory
  Copyright 2015,2016 - Mika Karaila, Valmet Automation Inc.
@@ -301,7 +301,7 @@
         <input type="text" id="node-config-input-serialAsciiResponseStartDelimiter" style="max-width:80px" placeholder="0x3A (:)">
       </div>
     </div>
-      <!-- <hr>
+      <hr>
       <div class="form-row">
           <label for="node-config-input-unit_id"><i class="icon-bookmark"></i> <span data-i18n="modbus-contrib.label.unitId"></span></label>
           <input type="text" id="node-config-input-unit_id" style="max-width:80px">
@@ -310,11 +310,12 @@
           <label for="node-config-input-clientTimeout"><i class="icon-time"></i> <span data-i18n="modbus-contrib.label.timeout"></span></label>
           <input type="text" id="node-config-input-clientTimeout" placeholder="1000" style="max-width:80px">
       </div>
+      <!--
       <div class="form-row">
           <label style="min-width:160px" for="node-config-input-reconnectOnTimeout"><i class="fa fa-th"></i> <span
           data-i18n="modbus-contrib.label.reconnectOnTimeout"></span></label>
           <input type="checkbox" id="node-config-input-reconnectOnTimeout" style="max-width:30px">
-      </div>
+      </div> -->
       <div class="form-row">
           <label for="node-config-input-reconnectTimeout">
               <i class="icon-time"></i>
@@ -322,6 +323,7 @@
           </label>
           <input type="text" id="node-config-input-reconnectTimeout" placeholder="2000" style="max-width:80px">
       </div>
+      <!--
       <div class="form-row">
           <label style="min-width:160px" for="node-config-input-parallelUnitIdsAllowed"><i class="fa fa-th"></i> <span
           data-i18n="modbus-contrib.label.parallelUnitIdsAllowed"></span></label>
@@ -346,12 +348,12 @@
           <label style="min-width:160px" for="node-config-input-bufferCommands"><i class="fa fa-th"></i> <span
           data-i18n="modbus-contrib.label.queueCommands"></span></label>
           <input type="checkbox" id="node-config-input-bufferCommands" style="max-width:30px">
-      </div>
+      </div>  -->
       <div class="form-row">
-          <label style="min-width:160px" for="node-config-input-commandDelay"><i class="icon-time"></i> <span
+          <label for="node-config-input-commandDelay"><i class="icon-time"></i> <span
           data-i18n="modbus-contrib.label.commandDelay"></span></label>
           <input type="text" id="node-config-input-commandDelay" placeholder="1" style="max-width:80px">
-      </div> -->
+      </div>
   
   </script>
   

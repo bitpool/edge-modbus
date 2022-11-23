@@ -4,6 +4,7 @@ dist/
 
 # Jest Testing
 coverage/
+test/
 *test.js
 
 # Compiled Java class files

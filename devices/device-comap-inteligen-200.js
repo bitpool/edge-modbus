@@ -1,6 +1,6 @@
 module.exports.RegisterMap = [
 	{"address":1001,"fnCode":"F3_HOLDING_REGS","multiplier":1,"format":"16BIT_INT_HI_FIRST","size":2,"scale":"NONE","uom":"RPM","name":"RPM"},
-	{"address":1002,"fnCode":"F3_HOLDING_REGS","multiplier":1,"format":"8BIT_INT","size":1,"scale":"NONE","uom":"NONE","name":"ECU State"},
+	{"address":1002,"fnCode":"F3_HOLDING_REGS","multiplier":1,"format":"8BIT_INT","size":1,"scale":"NONE","uom":"NONE","name":"ECU_STATE"},
 	{"address":1018,"fnCode":"F3_HOLDING_REGS","multiplier":0.1,"format":"16BIT_INT_HI_FIRST","size":2,"scale":"NONE","uom":"PERCENT","name":"SPEED_REQUEST_PRECENT"},
 	{"address":1019,"fnCode":"F3_HOLDING_REGS","multiplier":1,"format":"16BIT_UINT_HI_FIRST","size":2,"scale":"NONE","uom":"RPM","name":"SPEED_REQUEST_RPM"},
 	{"address":1020,"fnCode":"F3_HOLDING_REGS","multiplier":1,"format":"16BIT_INT_HI_FIRST","size":2,"scale":"KILO","uom":"POWER_ACTIVE_P","name":"POWER_TOTAL_KW"},
