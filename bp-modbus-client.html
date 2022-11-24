@@ -36,7 +36,10 @@
         clientTimeout: {value: 1000},
         reconnectOnTimeout: {value: true},
         reconnectTimeout: {value: 2000},
-        parallelUnitIdsAllowed: {value: true}
+        parallelUnitIdsAllowed: {value: true},
+
+        bpChkShowDebugWarnings: {value: false}
+
       },
       color: "#00aeef",
       icon: "bitpool.svg",      
@@ -354,7 +357,16 @@
           data-i18n="modbus-contrib.label.commandDelay"></span></label>
           <input type="text" id="node-config-input-commandDelay" placeholder="1" style="max-width:80px">
       </div>
-  
+
+      <hr>
+
+      <div class="form-row" style="display: flex;">
+        <div class="form-check" style="width: 8%; display: grid; align-content: space-between;">
+          <input class="form-check-input" type="checkbox" value="" id="node-config-input-bpChkShowDebugWarnings" unchecked>
+        </div>
+        <label id="node-label-bpChkShowDebugWarnings" for="node-config-input-bpChkShowDebugWarnings" style="text-align:left; vertical-align:middle; width: 100%;">Show activity messages in debug tab</label>
+      </div>
+
   </script>
   
   <script type="text/html" data-help-name="bp-modbus-client">

@@ -34,7 +34,7 @@
       const serialConnectionDelayTimeMS = 500
       const timeoutTimeMS = 1000
       const reconnectTimeMS = 2000
-      const logHintText = ' Get More About It By Logging'
+      const logHintText = ''
       const serialAsciiResponseStartDelimiter = '0x3A'
   
       this.clienttype = config.clienttype
@@ -45,6 +45,8 @@
         this.bufferCommands = config.bufferCommands
       }
   
+      this.bpChkShowDebugWarnings = config.bpChkShowDebugWarnings
+
       this.queueLogEnabled = config.queueLogEnabled
       this.stateLogEnabled = config.stateLogEnabled
   
@@ -92,7 +94,7 @@
       node.reconnectTimeoutId = 0
       node.serialSendingAllowed = false
       node.internalDebugLog = internalDebugLog
-  
+
       coreModbusQueue.queueSerialLockCommand(node)
   
       node.setDefaultUnitId = function () {
@@ -126,21 +128,22 @@
       }
   
       function verboseWarn (logMessage) {
-        if (RED.settings.verbose) {
-          node.warn('Client -> ' + logMessage + node.serverInfo)
+        if (node.bpChkShowDebugWarnings) {
+          node.warn(`Modbus [${node.serverInfo.trim()}] ${logMessage}`)
         }
       }
   
       function verboseLog (logMessage) {
-        if (RED.settings.verbose) {
-          coreModbusClient.internalDebug('Client -> ' + logMessage + node.serverInfo)
+        if (node.bpChkShowDebugWarnings) {
+          node.warn(`Modbus [${node.serverInfo.trim()}] ${logMessage}`)
         }
       }
   
       function stateLog (logMessage) {
-        if (node.stateLogEnabled) {
-          verboseLog(logMessage)
-        }
+        verboseLog(logMessage)
+        // if (node.stateLogEnabled) {
+        //   verboseLog(logMessage)
+        // }
       }
   
       node.queueLog = function (logMessage) {
