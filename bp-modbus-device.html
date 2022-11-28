@@ -76,7 +76,7 @@
         $("#node-input-bpUnitName").typedInput('value', template[0].optTextShort);
 
         if ($("#node-input-bpRegisters-container").editableList('items').length > 0) {
-          if (confirm("Applying this template will overwrite you existing configuration.\r\n\r\nDo you want to proceed?") == true) {
+          if (confirm("Applying this template will overwrite your existing configuration.\r\n\r\nWould you like to proceed?") == true) {
             $.getJSON("/devices/" + link, function (data) {
               $("#node-input-bpRegisters-container").editableList('empty');
               for (var i = 0; i < data.length; i++) {
@@ -99,12 +99,26 @@
       $("#node-input-bpUnitName").on('change', function (event, type, value) {
         this.bpUnitName = value
       });
+      $("#node-input-bpModbusId").on('change', function (event, type, value) {
+        this.bpModbusId = value
+      });      
 
       $.getJSON('devices', function (data) {
         bpRegisterMap = data
         var deviceList = $("#node-input-bpSelectedTemplate");
 
         deviceList.empty();
+        let isInList = false
+        for (var i = 0; i < bpRegisterMap.length; i++) {
+          if (bpRegisterMap[i].optValue == node.bpSelectedTemplate) {
+            isInList = true
+          }
+        }
+        if(isInList){
+          deviceList.append($("<option></option>").val('DEVICE_UNKNOWN').text('Select a template...'));
+        }else{
+          deviceList.append($("<option selected></option>").val('DEVICE_UNKNOWN').text('Select a template...'));
+        }
         for (var i = 0; i < bpRegisterMap.length; i++) {
           if (bpRegisterMap[i].optValue == node.bpSelectedTemplate) {
             deviceList.append($("<option selected></option>").val(bpRegisterMap[i].optValue).text(bpRegisterMap[i].optText));
@@ -189,46 +203,213 @@
           removable: true,
           scrollOnAdd: false,
           header: $("<div style='display:flex; padding:10px 10px 0px 5px; column-gap: 10px'>").append($.parseHTML("<div><p>Count:</p></div><div style='color: gray'><label id='node-input-reg-block-count'>0</label></div>")),
-          buttons: [{
-            label: "json",
-            icon: "fa fa-share",
-            title: "Export modbus registers as JSON to browser",
-            click: function (evt) {
-              var bpRegisters = $("#node-input-bpRegisters-container").editableList('items');
-              var mapItems = []
-              bpRegisters.each(function (i) {
-                var registerMap = $(this);
-                var mapItem = {
-                  address: Number(registerMap.find(".node-input-register-address").val()),
-                  fnCode: registerMap.find(".node-input-function-code").val(),
-                  multiplier: Number(registerMap.find(".node-input-register-multiplier").val()),
-                  format: registerMap.find(".node-input-register-format").val(),
-                  size: Number(registerMap.find(".node-input-register-size").val()),
-                  scale: registerMap.find(".node-input-register-scale").val(),
-                  uom: registerMap.find(".node-input-register-uom").val(),
-                  name: registerMap.find(".node-input-register-name").val(),
+          buttons: [
+            {
+              label: "delete all",
+              icon: "fa-regular fa-trash-can",
+              title: "Delete all registers",
+              click: function (evt) {
+                $("#node-input-bpRegisters-container").editableList('empty');
+                document.getElementById('node-input-reg-block-count').innerHTML = 0
+              },
+            },  
+            {
+              label: "upload",
+              icon: "fa fa-cloud-upload",
+              title: "Upload Modbus registers from a local file",
+              click: function (evt) {
+                let input = document.createElement('input');
+                input.type = 'file';
+
+                input.onchange = _ => {
+                  const reader = new FileReader();
+                  const files =  Array.from(input.files);
+                  reader.readAsText(files[0]);
+
+                  reader.onload = function (e) {
+                    const jsonFile = JSON.parse(e.target.result);
+                    if(jsonFile.schema && jsonFile.schema == "BP_MODBUS_V1"){
+
+                      $("#node-input-bpUnitName").typedInput('value', jsonFile.name)
+
+                      let modId = jsonFile.modbusId
+                      
+                      if(typeof modId != 'number' || isNaN(modId)){
+                        modId = parseInt(modId)
+                      }
+                      
+                      $("#node-input-bpModbusId").typedInput('value', modId)
+
+                      const registers = jsonFile.registers;
+                      if(Array.isArray(registers)) {
+                        let validMaps = []
+                        for (let x in registers) {
+                          let map = registers[x]
+
+                          try{
+                            let cntOfKeys = Object.keys(map).length
+                            let allKeys = ['address', 'fnCode', 'multiplier', 'format', 'size', 'scale', 'uom', 'name']
+                            let lenKeys = allKeys.length
+
+                            if(cntOfKeys == lenKeys){
+                              let foundAllKeys = 0
+
+                              for (let key in map) {
+                                if(allKeys.includes(key)){
+                                    delete allKeys[allKeys.indexOf(key)]
+                                    foundAllKeys++
+                                }
+                              }
+                              if(foundAllKeys == lenKeys){
+                                  for (let key in map) {
+                                    let value = map[key]
+
+                                    if (key == 'address'){
+                                      // Note - address can be (eg [12,23,53...] or ["0x0A","0X0aF"...])
+                                      if(typeof value != 'number'){
+                                        if(value.match(/^(0[xX]){1}[0-9A-Fa-f]+$/) != null){
+                                          let convValue =  parseInt(value, 16)
+                                          if(isNaN(convValue)){
+                                            throw `Property '${key}' data cannot be converted to a number`  
+                                          }else if(typeof convValue != 'number'){
+                                            throw `Property '${key}' data must be a number, but is '${typeof convValue}'`  
+                                          }
+                                          map[key] = convValue
+                                        }else{
+                                          throw `Property '${key}' data must be a number, but is '${typeof value}'`  
+                                        }
+                                      }
+
+                                    }else if (key == 'multiplier' || key == 'size'){
+                                      if(typeof value != 'number'){
+                                        if(value.match(/^[0-9\.]+$/) != null){
+                                          let convValue =  parseFloat(value)
+                                          if(isNaN(convValue)){
+                                            throw `Property '${key}' data cannot be converted to a number`  
+                                          }else if(typeof convValue != 'number'){
+                                            throw `Property '${key}' data must be a number, but is '${typeof convValue}'`  
+                                          }
+                                          map[key] = convValue                                        
+                                        }else{
+                                          throw `Property '${key}' data must be a number, but is '${typeof value}'`  
+                                        }
+                                      }
+
+                                    }else if(key == 'scale' || key == 'uom' || key == 'name' || key == 'fnCode' || key == 'format'){ 
+                                      if(typeof value == 'string'){
+                                        if(value.match(/^[A-Z0-9_]+$/) == null){
+                                          throw `Property '${key}' data must be a string [A-Z0-9_], but is '${value}'`  
+                                        }
+                                      }else{
+                                        throw `Property '${key}' data must be a string, but is '${typeof value}'`  
+                                      }
+
+                                    }else{
+                                      throw `Property '${key}' data is of incorrect data type '${typeof value}'`  
+                                    }
+                                  }
+                                  // All checked OK, so add...
+                                  validMaps.push(map)
+                              }else{
+                                throw "Incorrect number of keys or invalid key name"
+                              }
+                            }
+                          }catch(err) {
+                            // Let debug know we had issues importing record
+                            console.log("Bad register map record not imported [" + err + "]")
+                            console.log(map)
+                          }
+                        }
+                        // Update all records
+                        $("#node-input-bpRegisters-container").editableList('empty');
+                        for (var i = 0; i < validMaps.length; i++) {
+                          $("#node-input-bpRegisters-container").editableList('addItem', validMaps[i]);
+                        }
+                        document.getElementById('node-input-reg-block-count').innerHTML = validMaps.length
+                      }
+                    } 
+                  } 
                 };
-                mapItems.push(mapItem);
-              });
-              var oMyBlob = new Blob([
-                JSON.stringify(mapItems, null, 0)
-                  .replaceAll(/\[{/gi, "[\n{")
-                  .replaceAll(/}\]/gi, "}\n]")
-                  .replaceAll(/},/gi, "},\n")
-                  .replaceAll(/{/gi, "  {")
-              ], {type: 'text/json'});
-              window.open(URL.createObjectURL(oMyBlob));
+                input.click();
+              },
             },
-          },
-          {
-            label: "delete",
-            icon: "fa-regular fa-trash-can",
-            title: "Delete all registers",
-            click: function (evt) {
-              $("#node-input-bpRegisters-container").editableList('empty');
-              document.getElementById('node-input-reg-block-count').innerHTML = 0
-            },
-          }
+            {
+              label: "download",
+              icon: "fa fa-cloud-download",
+              title: "Download Modbus registers to a local file",
+              click: function (evt) {
+
+                var bpRegisters = $("#node-input-bpRegisters-container").editableList('items');
+                var mapItems = []
+                bpRegisters.each(function (i) {
+                  var registerMap = $(this);
+                  var mapItem = {
+                    address: Number(registerMap.find(".node-input-register-address").val()),
+                    fnCode: registerMap.find(".node-input-function-code").val(),
+                    multiplier: Number(registerMap.find(".node-input-register-multiplier").val()),
+                    format: registerMap.find(".node-input-register-format").val(),
+                    size: Number(registerMap.find(".node-input-register-size").val()),
+                    scale: registerMap.find(".node-input-register-scale").val(),
+                    uom: registerMap.find(".node-input-register-uom").val(),
+                    name: registerMap.find(".node-input-register-name").val(),
+                  };
+                  mapItems.push(mapItem);
+                });
+   
+                let unitName = $("#node-input-bpUnitName").val()
+                let modbusId = $("#node-input-bpModbusId").val()
+                let jBlock = {
+                  schema: "BP_MODBUS_V1",
+                  name: unitName,
+                  modbusId: parseInt(modbusId),
+                  registers: mapItems
+                }
+
+                let jMap = JSON.stringify(jBlock, null, 2)
+
+                function download(content, fileName, contentType) {
+                  const a = document.createElement("a");
+                  const file = new Blob([content], { type: contentType });
+                  a.href = URL.createObjectURL(file);
+                  a.download = fileName;
+                  a.click();
+                }
+               
+                let dlFilename = `bp-modbus-${unitName}-${modbusId}`.replace(/[\W_]+/g,"-").toLowerCase();  
+                download(jMap, `${dlFilename}.json` , "text/plain");
+              },
+            },            
+            {
+              label: "view",
+              icon: "fa fa-share",
+              title: "Show Modbus registers in browser",
+              click: function (evt) {
+                var bpRegisters = $("#node-input-bpRegisters-container").editableList('items');
+                var mapItems = []
+                bpRegisters.each(function (i) {
+                  var registerMap = $(this);
+                  var mapItem = {
+                    address: Number(registerMap.find(".node-input-register-address").val()),
+                    fnCode: registerMap.find(".node-input-function-code").val(),
+                    multiplier: Number(registerMap.find(".node-input-register-multiplier").val()),
+                    format: registerMap.find(".node-input-register-format").val(),
+                    size: Number(registerMap.find(".node-input-register-size").val()),
+                    scale: registerMap.find(".node-input-register-scale").val(),
+                    uom: registerMap.find(".node-input-register-uom").val(),
+                    name: registerMap.find(".node-input-register-name").val(),
+                  };
+                  mapItems.push(mapItem);
+                });
+                var oMyBlob = new Blob([
+                  JSON.stringify(mapItems, null, 0)
+                    .replaceAll(/\[{/gi, "[\n{")
+                    .replaceAll(/}\]/gi, "}\n]")
+                    .replaceAll(/},/gi, "},\n")
+                    .replaceAll(/{/gi, "  {")
+                ], {type: 'text/json'});
+                window.open(URL.createObjectURL(oMyBlob));
+              },
+            }
           ]
         })
 
