@@ -440,7 +440,10 @@
     },
     oneditresize: function (size) {
       var height = size.height;
-      $('#node-input-bpRegisters-container').css("height", (height - 300) + "px");
+      $('#node-input-bpRegisters-container').css("height", (height - 250) + "px");
+      $("li.red-ui-editableList-item-removable:odd").css({
+        "background-color":"#F5F5F5"
+        });
     }
   })
   function filterByName() {
@@ -473,15 +476,15 @@
   </div>
   <div id='node-input-tabs-content'>
     <div id='modbus-registers-tab' style='display:none'>
-      <div class="form-row" style="display: flex;">
+      <!-- Disable feature for local requests, will be replace with cloud API requests in future release -->
+      <!-- <div class="form-row" style="display: flex;">
         <select class="custom-select mr-sm-2" id="node-input-bpSelectedTemplate" style="width:100%"></select>
-        
         <button type="submit" class="ui-button ui-corner-all ui-widget" id="node-btn-apply-register-map" style="margin-left: 15px; padding-top: 0px; padding-bottom: 0px">
             <div style="display: flex; padding:0px 10px 0px 10px; column-gap: 5px">
             <div>Load</div>
           </div>
         </button>
-      </div>
+      </div> -->
       <div class="form-row" style="display: flex;">
         <input type="text" id="node-input-reg-search-name" onkeyup="filterByName()" placeholder="Filter by name" style="width: 100%; margin-right: 25px">
         <input type="text" id="node-input-reg-search-name-address" onkeyup="filterByAddress()" placeholder="Filter by address" style="width: 100%;">

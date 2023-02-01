@@ -334,114 +334,51 @@ module.exports = function (RED) {
     var msgConverted = Object.assign({}, msg);
     let msgsConverted = [];
     try {
+      var pf = msgConverted.payload;
+      var pfProp = {};
+      if (convertPowerFactor == true) {
+        var regUnitMeasure = msgConverted.modbusSource.regUnitName;
+        if (regUnitMeasure == "POWER_FACTOR") {
+          if (pf < -2) pf = -2;
+          if (pf > 2) pf = 2;
 
-      let deviceTemplate;
-      // Check to see if there are any other conversions associated with device protocol
-      if (
-        (deviceTemplate = TEMPLATE.DeviceTemplateTypes.find(
-          ({ optValue }) => optValue === selectedDeviceId
-        ))
-      ) {
+          // -2   -1     0     1     2
+          // |  Q3 |  Q2 |  Q1 |  Q4 |
+          // | IND | CAP | IND | CAP |
+          // |  VI |  IV |  VI |  IV |
+          // |  EXPORT   |  IMPORT   |
+          // |           | PF  |     |
+          // |     |   PF_Q2   |     |
+          // |         PF_Q4         |
+          pfProp.inputPf = pf;
 
-        let deviceLink = deviceTemplate.link;
-
-        // Load the register map
-        let map = require(`./devices/${deviceLink}.js`).EnumMap;
-
-        if (map.length > 0) {
-
-          let registerMap;
-          // Find the specific entry based on modbus address
-          if (
-            (registerMap = map.find(({ address }) => address === regAddress))
-          ) {
-            // Check to see if it is LIST or BINARY enum
-            if (registerMap.type == ENUM.ModbusRegDecoderTypes.LIST) {
-              // Use the value received by node to convert to new value using map
-              let convObject;
-              let convValue = parseInt(msgConverted.payload);
-              if (
-                (convObject = registerMap.map.find(
-                  ({ index }) => index === convValue
-                ))
-              ) {
-                msgConverted.payload = convertToCapScore(convObject.value);
-                msgsConverted.push(msgConverted);
-              }
-            } else if (registerMap.type == ENUM.ModbusRegDecoderTypes.BINARY) {
-              // BINARY maps means we need to send each bit as individual payload
-              let workingTopic = msgConverted.topic;
-              let val = parseInt(msgConverted.payload);
-
-              // If not found, dont pass on object as invalid bit
-              registerMap.map.forEach((element) => {
-                let msgCopy = Object.assign({}, msgConverted);
-                msgCopy.topic =
-                  workingTopic + "/" + convertToCapScore(element.name);
-                if ((element.index & val) == element.index) {
-                  msgCopy.payload = element.trueValue;
-                } else {
-                  msgCopy.payload = element.falseValue;
-                }
-                msgsConverted.push(msgCopy);
-              });
-            }
-          } else {
-            // Did not find any map so just send orginal message
-            msgsConverted.push(msgConverted);
+          if (pf >= 0 && pf <= 1) {
+            pfProp.quadrant = "Q1";
+            pfProp.powerType = pf == 1 ? "RESISTIVE" : "INDUCTIVE";
+            pfProp.impExp = "IMPORT";
+          } else if (pf >= -1 && pf <= 0) {
+            pfProp.quadrant = "Q2";
+            pfProp.powerType = pf == -1 ? "RESISTIVE" : "CAPACITIVE";
+            pfProp.impExp = "EXPORT";
+          } else if (pf >= -2 && pf <= -1) {
+            pf = -2 - pf;
+            pfProp.quadrant = "Q3";
+            pfProp.powerType = pf == -2 ? "RESISTIVE" : "INDUCTIVE";
+            pfProp.impExp = "EXPORT";
+          } else if (pf >= 1 && pf <= 2) {
+            pf = 2 - pf;
+            pfProp.quadrant = "Q4";
+            pfProp.powerType = pf == 2 ? "RESISTIVE" : "CAPACITIVE";
+            pfProp.impExp = "IMPORT";
           }
-        } else {
-          // Do other conversion processing of node vale input
-          var pf = msgConverted.payload;
-          var pfProp = {};
-          if (convertPowerFactor == true) {
-            var regUnitMeasure = msgConverted.modbusSource.regUnitName;
-            if (regUnitMeasure == "POWER_FACTOR") {
-              if (pf < -2) pf = -2;
-              if (pf > 2) pf = 2;
-
-              // -2   -1     0     1     2
-              // |  Q3 |  Q2 |  Q1 |  Q4 |
-              // | IND | CAP | IND | CAP |
-              // |  VI |  IV |  VI |  IV |
-              // |  EXPORT   |  IMPORT   |
-              // |           | PF  |     |
-              // |     |   PF_Q2   |     |
-              // |         PF_Q4         |
-              pfProp.inputPf = pf;
-
-              if (pf >= 0 && pf <= 1) {
-                pfProp.quadrant = "Q1";
-                pfProp.powerType = pf == 1 ? "RESISTIVE" : "INDUCTIVE";
-                pfProp.impExp = "IMPORT";
-              } else if (pf >= -1 && pf <= 0) {
-                pfProp.quadrant = "Q2";
-                pfProp.powerType = pf == -1 ? "RESISTIVE" : "CAPACITIVE";
-                pfProp.impExp = "EXPORT";
-              } else if (pf >= -2 && pf <= -1) {
-                pf = -2 - pf;
-                pfProp.quadrant = "Q3";
-                pfProp.powerType = pf == -2 ? "RESISTIVE" : "INDUCTIVE";
-                pfProp.impExp = "EXPORT";
-              } else if (pf >= 1 && pf <= 2) {
-                pf = 2 - pf;
-                pfProp.quadrant = "Q4";
-                pfProp.powerType = pf == 2 ? "RESISTIVE" : "CAPACITIVE";
-                pfProp.impExp = "IMPORT";
-              }
-              pfProp.degsVtoI = parseFloat(convertPfToLeadLagDeg(pf));
-              var conv = {};
-              conv.powerFactor = pfProp;
-              msgConverted.modbusSource.conversion = conv;
-              msgConverted.payload = Number(pf);
-
-              msgsConverted.push(msgConverted);
-            }else{
-              // Did not find any pf calc so just send orginal message
-              msgsConverted.push(msgConverted);              
-            }
-          }
+          pfProp.degsVtoI = parseFloat(convertPfToLeadLagDeg(pf));
+          var conv = {};
+          conv.powerFactor = pfProp;
+          msgConverted.modbusSource.conversion = conv;
+          msgConverted.payload = Number(pf);
         }
+        
+        msgsConverted.push(msgConverted);              
       }
     } catch (err) {
       // Restore the orginal

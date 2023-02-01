@@ -1,6 +1,6 @@
 {
     "name": "@bitpoolos/edge-modbus",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "A set of Node-RED modules to support reading Modbus devices.",
     "dependencies": {
         "@xstate/fsm": "~1.6.4",
