@@ -1,10 +1,11 @@
 /*
-  MIT License Copyright 2021, 2022 - Bitpool Pty Ltd
+  MIT License Copyright 2021, 2022, 2023 - Bitpool Pty Ltd
 */
 
 module.exports = function (RED) {
   var ENUM = require("./enum.js");
   var OPT = require("./option.js")
+  const fetch = require('node-fetch');
 
   function bpModbusDevice(config) {
     var node = this;
@@ -257,30 +258,44 @@ module.exports = function (RED) {
 
   RED.nodes.registerType("bp-device", bpModbusDevice);
 
+  // RED.httpAdmin.get('/devices', function (req, res) {
+  //   res.send(JSON.stringify(require("./devices/template.js").DeviceTemplateTypes));
+  // });
   RED.httpAdmin.get('/devices', function (req, res) {
-    res.send(JSON.stringify(require("./devices/template.js").DeviceTemplateTypes));
+    fetch('https://apix.bitpool.com/edge/v1/modbus/templates')
+    .then(response => response.json())
+    .then(payload => res.send(JSON.stringify(payload.data.devices)))
+    .catch(error => console.error(error));
   });
 
   RED.httpAdmin.get('/devices/:device', function (req, res) {
-    // Add validated maps here from v1.0.2
-    if (
-      req.params.device == 'device-abb-m4m' ||
-      req.params.device == 'device-circutor-afq' ||
-      req.params.device == 'device-circutor-cvm-e3-mini' ||
-      req.params.device == 'device-comap-inteligen-200' ||
-      req.params.device == 'device-crompton-integra-2270' ||
-      req.params.device == 'device-moxa-e1210' ||
-      req.params.device == 'device-schneider-iem3250' ||
-      req.params.device == 'device-schneider-powertag-1p' ||
-      req.params.device == 'device-schneider-powertag-3p' ||
-      req.params.device == 'device-schneider-powertag-a9mem1540' ||
-      req.params.device == 'device-schneider-powertag-a9mem1580' ||
-      req.params.device == 'device-socomec-diris-a10' ||
-      req.params.device == 'device-socomec-diris-a30'
-    ) {
-      res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
-    } 
-  });
+    fetch(`https://apix.bitpool.com/edge/v1/modbus/templates?device=${req.params.device}`)
+    .then(response => response.json())
+    .then(payload => res.send(JSON.stringify(payload.data.registers)))
+    .catch(error => console.error(error));
+  });  
+
+
+  // RED.httpAdmin.get('/devices/:device', function (req, res) {
+  //   // Add validated maps here from v1.0.2
+  //   if (
+  //     req.params.device == 'device-abb-m4m' ||
+  //     req.params.device == 'device-circutor-afq' ||
+  //     req.params.device == 'device-circutor-cvm-e3-mini' ||
+  //     req.params.device == 'device-comap-inteligen-200' ||
+  //     req.params.device == 'device-crompton-integra-2270' ||
+  //     req.params.device == 'device-moxa-e1210' ||
+  //     req.params.device == 'device-schneider-iem3250' ||
+  //     req.params.device == 'device-schneider-powertag-1p' ||
+  //     req.params.device == 'device-schneider-powertag-3p' ||
+  //     req.params.device == 'device-schneider-powertag-a9mem1540' ||
+  //     req.params.device == 'device-schneider-powertag-a9mem1580' ||
+  //     req.params.device == 'device-socomec-diris-a10' ||
+  //     req.params.device == 'device-socomec-diris-a30'
+  //   ) {
+  //     res.send(JSON.stringify(require(`./devices/${req.params.device}.js`).RegisterMap));
+  //   } 
+  // });
 
   RED.httpAdmin.get('/options/:option', function (req, res) {
     if (req.params.option == 'option-modbus-register-scale') {

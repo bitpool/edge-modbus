@@ -1,13 +1,14 @@
 {
     "name": "@bitpoolos/edge-modbus",
-    "version": "1.4.0",
-    "description": "A set of Node-RED modules to support reading Modbus devices.",
+    "version": "1.5.0",
+    "description": "Modules to support reading Modbus devices.",
     "dependencies": {
         "@xstate/fsm": "~1.6.4",
         "bson": "~4.6.1",
         "debug": "~4.3.2",
         "line-by-line": "~0.1.6",
-        "modbus-serial": "~8.0.5"
+        "modbus-serial": "~8.0.5",
+        "node-fetch": "^2.6.7"        
     },
     "optionalDependencies": {
         "@serialport/list": "^9.0.0",
