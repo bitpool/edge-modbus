@@ -295,10 +295,19 @@
                                         }
                                       }
 
-                                    }else if(key == 'scale' || key == 'uom' || key == 'name' || key == 'fnCode' || key == 'format'){ 
+                                    }else if(key == 'scale' || key == 'uom' || key == 'fnCode' || key == 'format'){ 
                                       if(typeof value == 'string'){
                                         if(value.match(/^[A-Z0-9_]+$/) == null){
                                           throw `Property '${key}' data must be a string [A-Z0-9_], but is '${value}'`  
+                                        }
+                                      }else{
+                                        throw `Property '${key}' data must be a string, but is '${typeof value}'`  
+                                      }
+
+                                    }else if(key == 'name' ){ 
+                                      if(typeof value == 'string'){
+                                        if (value.match(/^[ -~]+$/) == null){
+                                          throw `Property '${key}' data must be a string with printable characters, but is '${value}'`  
                                         }
                                       }else{
                                         throw `Property '${key}' data must be a string, but is '${typeof value}'`  
