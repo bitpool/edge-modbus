@@ -129,7 +129,6 @@
  de.biancoroyal.modbus.queue.core.dequeueCommand = function (node) {
    const queueCore = de.biancoroyal.modbus.queue.core
    const state = node.actualServiceState
- 
    if (node.messageAllowedStates.indexOf(state.value) === -1) {
      queueCore.dequeueLogEntry(node, state, 'dequeue command disallowed state')
    } else {

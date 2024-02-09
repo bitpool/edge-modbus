@@ -10,12 +10,15 @@ module.exports = function (RED) {
     const internalDebugLog = require('debug')('contribModbus:flex:getter')
 
     function bpModbusReader(config) {
-        var node = this;
+        const node = this;
         RED.nodes.createNode(node, config);
 
         this.name = config.name
+        this.unitid = config.unitid
+        
         this.showStatusActivities = config.showStatusActivities
         this.showErrors = config.showErrors
+        this.showWarnings = config.showWarnings
         this.connection = null
 
         this.useIOFile = config.useIOFile
@@ -28,12 +31,19 @@ module.exports = function (RED) {
         this.internalDebugLog = internalDebugLog        
         this.verboseLogging = RED.settings.verbose
 
+        this.delayOnStart = config.delayOnStart
+        this.startDelayTime = parseInt(config.startDelayTime) || 10
+
         node.bufferMessageList = new Map()
+        node.INPUT_TIMEOUT_MILLISECONDS = 1000
+        node.delayOccured = false
+        node.inputDelayTimer = null
+
         mbBasics.setNodeStatusTo('waiting', node)
 
         const modbusClient = RED.nodes.getNode(config.server)
         if (!modbusClient) {
-            return
+          return
         }
         modbusClient.registerForModbus(node)
         mbBasics.initModbusClientEvents(node, modbusClient)
@@ -54,15 +64,45 @@ module.exports = function (RED) {
             mbBasics.logMsgError(node, err, msg)
             mbBasics.sendEmptyMsgOnFail(node, err, msg)
         }
+        //Retry on error logic
 
+
+        //existing
         node.onModbusReadError = function (err, msg) {
             node.internalDebugLog(err.message)
             const origMsg = mbCore.getOriginalMessage(node.bufferMessageList, msg)
             node.errorProtocolMsg(err, origMsg)
+            mbBasics.sendEmptyMsgOnFail(node, err, msg)
             mbBasics.setModbusError(node, modbusClient, err, origMsg)
             node.emit('modbusFlexGetterNodeError')
         }
+        // Constants for retry mechanism
+        // const RETRY_DELAY_MS = 1000; // Delay between retries in milliseconds
+        // const MAX_RETRIES = 5; // Maximum number of retry attempts
+        // let retryCount = 0; // Initialize retry count
+        // node.onModbusReadError = function (err, msg) {
+        //     const checkStateAndRetry = () => {
+        //         if (modbusClient.actualServiceState.value === 'connected') {
+        //             node.warn("in if current state: "+modbusClient.actualServiceState.value)
+        //             // State is connected, retry the Modbus operation
+        //             retryModbusOperation(msg);
+        //         } else {
+        //             // State is not OK, continue checking
+        //             //node.warn("current state: "+modbusClient.actualServiceState.value)
+        //             setTimeout(checkStateAndRetry, 1000); // Check again after 1 second
+        //         }
+        //     };
+        
+        //     // Start checking the state
+        //     checkStateAndRetry();
+        // };
+        
+        // function retryModbusOperation(origMsg) {
+        //     // Logic to re-emit the readModbus event or directly call the function initiating the Modbus request
+        //     modbusClient.emit('readModbus', origMsg, node.onModbusReadDone, node.onModbusReadError);
+        // }
 
+        //end of changes
         node.prepareMsg = function (msg) {
             if (typeof msg.payload === 'string') {
                 msg.payload = JSON.parse(msg.payload)
@@ -119,10 +159,60 @@ module.exports = function (RED) {
             }
         }
 
+        function verboseWarn (logMessage) {
+            if (RED.settings.verbose && node.showWarnings) {
+              node.warn('Flex-Getter -> ' + logMessage)
+            }
+          }
+      
+          node.isReadyForInput = function () {
+            return (modbusClient.client && modbusClient.isActive() && node.delayOccured)
+          }
+      
+          node.isNotReadyForInput = function () {
+            return !node.isReadyForInput()
+          }
+      
+          node.resetInputDelayTimer = function () {
+            if (node.inputDelayTimer) {
+              verboseWarn('reset input delay timer node ' + node.id)
+              clearTimeout(node.inputDelayTimer)
+            }
+            node.inputDelayTimer = null
+            node.delayOccured = false
+          }
+      
+          node.initializeInputDelayTimer = function () {
+            node.resetInputDelayTimer()
+            if (node.delayOnStart) {
+              verboseWarn('initialize input delay timer node ' + node.id)
+              node.inputDelayTimer = setTimeout(() => {
+                node.delayOccured = true
+              }, node.INPUT_TIMEOUT_MILLISECONDS * node.startDelayTime)
+            } else {
+              node.delayOccured = true
+            }
+          }
+      
+          node.initializeInputDelayTimer()
+
         node.on('input', function (msg) {
-            if (mbBasics.invalidPayloadIn(msg) || !modbusClient.client) {
+            if (mbBasics.invalidPayloadIn(msg)) {
+                verboseWarn('Invalid message on input')
                 return
             }
+
+            if (node.isNotReadyForInput()) {
+                verboseWarn('Inject while node is not ready for input.')
+                return
+            }
+        
+              if (modbusClient.isInactive()) {
+                verboseWarn('You sent an input to inactive client. Please use initial delay on start or send data more slowly.')
+                return
+            }
+
+
             const origMsgInput = Object.assign({}, msg) // keep it origin
             try {
                 const inputMsg = node.prepareMsg(origMsgInput)
@@ -133,6 +223,7 @@ module.exports = function (RED) {
                 }
             } catch (err) {
                 node.errorProtocolMsg(err, origMsgInput)
+                mbBasics.sendEmptyMsgOnFail(node, err, origMsgInput)
             }
 
             if (node.showStatusActivities) {
@@ -141,6 +232,7 @@ module.exports = function (RED) {
         })
 
         node.on('close', function (done) {
+            node.resetInputDelayTimer()
             mbBasics.setNodeStatusTo('closed', node)
             node.bufferMessageList.clear()
             modbusClient.deregisterForModbus(node.id, done)

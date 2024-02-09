@@ -1,13 +1,13 @@
 {
     "name": "@bitpoolos/edge-modbus",
-    "version": "1.5.1",
+    "version": "1.5.5",
     "description": "Modules to support reading Modbus devices.",
     "dependencies": {
         "@xstate/fsm": "~1.6.4",
         "bson": "~4.6.1",
         "debug": "~4.3.2",
         "line-by-line": "~0.1.6",
-        "modbus-serial": "~8.0.5",
+        "modbus-serial": "8.0.16",
         "node-fetch": "^2.6.7"        
     },
     "optionalDependencies": {

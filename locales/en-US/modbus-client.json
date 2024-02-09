@@ -1,28 +1,38 @@
 {
-    "modbus-contrib": {
-      "label": {
-        "type": "Type",
-        "queueCommands": "Queue commands",
-        "queueLogEnabled": "Queue Logging",
-        "stateLogEnabled": "Log states changes",
-        "host": "Host",
-        "port": "Port",
-        "tcpType": "TCP Type",
-        "serialport": "Serial port",
-        "serialType": "Serial type",
-        "serialEndian": "Endian type",
-        "baudRate": "Baud rate",
-        "dataBits": "Data Bits",
-        "stopBits": "Stop Bits",
-        "parity": "Parity",
-        "serialconnectiondelay": "Connection delay (ms)",
-        "unitId": "Unit-Id",
-        "commandDelay": "Queue delay (ms)",
-        "timeout": "Timeout (ms)",
-        "reconnectOnTimeout": "Reconnect on timeout",
-        "reconnectTimeout": "Reconnect timeout (ms)",
-        "parallelUnitIdsAllowed": "UnitId's in parallel",
-        "serialAsciiResponseStartDelimiter": "ASCII response start delimiter"
-      }
+  "modbus-contrib": {
+    "label": {
+      "type": "Type",
+      "queueCommands": "Queue commands",
+      "queueLogEnabled": "Queue Logging",
+      "stateLogEnabled": "Log states changes",
+      "failureLogEnabled": "Log failures",
+      "host": "Host",
+      "port": "Port",
+      "tcpType": "TCP Type",
+      "serialport": "Serial port",
+      "serialType": "Serial type",
+      "serialEndian": "Endian type",
+      "baudRate": "Baud rate",
+      "dataBits": "Data Bits",
+      "stopBits": "Stop Bits",
+      "parity": "Parity",
+      "serialconnectiondelay": "Connection delay (ms)",
+      "unitId": "Unit-Id",
+      "commandDelay": "Queue delay (ms)",
+      "timeout": "Timeout (ms)",
+      "reconnectOnTimeout": "Reconnect on timeout",
+      "reconnectTimeout": "Reconnect timeout (ms)",
+      "parallelUnitIdsAllowed": "UnitId's in parallel queues",
+      "parallelUnitIdsAllowedInfo": "Don't use it for serial without a serial gateway.",
+      "serialAsciiResponseStartDelimiter": "ASCII response start delimiter",
+      "showErrors": "Show Errors",
+      "showWarnings": "Show Warnings",
+      "showLogs": "Show Logs"
+    },
+    "tabs-label": {
+      "settings": "Settings",
+      "queues": "Queues",
+      "options": "Optionals"
     }
   }
+}

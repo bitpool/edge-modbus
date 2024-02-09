@@ -9,13 +9,16 @@
       name: { value: null },
       showStatusActivities: { value: true },
       showErrors: { value: true },
+      showWarnings: {value: true},
       logIOActivities: { value: false },
       server: { type: 'bp-modbus-client', required: true },
       useIOFile: { value: false },
       ioFile: { value: '', type: 'bp-modbus-io-config', required: false },
       useIOForPayload: { value: false },
       emptyMsgOnFail: { value: false },
-      keepMsgProperties: { value: true }
+      keepMsgProperties: { value: true },
+      delayOnStart: {value: false},
+      startDelayTime: {value: ''},
     },
     inputs: 1,
     outputs: 1,
@@ -58,6 +61,22 @@
           modbusiofileRow.hide()
         }
       })
+
+      if (this.delayOnStart) {
+        $('#node-delay').show()
+      }
+      else {
+        $('#node-delay').hide()
+        $('#node-input-delayOnStart').prop('checked', false)
+      }
+
+      $('#node-input-delayOnStart').change(function () {
+        if ($(this).is(':checked')) {
+          $('#node-delay').show()
+        } else {
+          $('#node-delay').hide()
+        }
+      })
     },
   });
 </script>
@@ -76,6 +95,15 @@
             <div class="form-row" style="display: flex;">
                 <input type="text" id="node-input-server" style="width: 100%;">
             </div>
+            <!-- <div class="form-row" id="node-delayonstart">
+              <label for="node-input-delayOnStart" style="width:160px">
+              <i class="fa fa-power-off"></i> <span data-i18n="bp-modbus-contrib.label.delayOnStart"></span></label>
+              <input type="checkbox" id="node-input-delayOnStart" style="width:40px">
+          </div>
+          <div class="form-row" id="node-delay">
+              <label for="node-input-startDelayTime"><i class="fa fa-clock-o"></i> <span data-i18n="bp-modbus-contrib.label.startDelayTime"></span></label>
+              <input type="text" id="node-input-startDelayTime" placeholder="10" style="width:80px">
+          </div> -->
         </div>
         <div id="modbus-options-tab" style="display:none">
             <div class="form-row">
@@ -98,6 +126,11 @@
                 data-i18n="bp-modbus-contrib.label.showErrors"></span></label>
                 <input type="checkbox" id="node-input-showErrors" style="max-width:30px">
             </div>
+            <div class="form-row">
+              <label style="min-width:160px" for="node-input-showWarnings"><i class="fa fa-th"></i> <span
+              data-i18n="bp-modbus-contrib.label.showWarnings"></span></label>
+              <input type="checkbox" id="node-input-showWarnings" style="max-width:30px">
+          </div>
             <hr>
             <div class="form-row">
                 <label style="min-width:160px" for="node-input-useIOFile"><i class="fa fa-file-code-o"></i> <span
