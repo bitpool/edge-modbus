@@ -1,13 +1,13 @@
 {
     "name": "@bitpoolos/edge-modbus",
-    "version": "1.5.6",
+    "version": "1.5.7",
     "description": "Modules to support reading Modbus devices.",
     "dependencies": {
         "@xstate/fsm": "~1.6.4",
         "bson": "~4.6.1",
         "debug": "~4.3.2",
         "line-by-line": "~0.1.6",
-        "@open-p4nr/modbus-serial": "https://dl.cloudsmith.io/public/iniationware-gmbh/plus4nodered/npm/open-p4nr/modbus-serial/8.1.0/modbus-serial-8.1.0.tgz",
+        "modbus-serial": "~8.0.5",
         "node-fetch": "^2.6.7"        
     },
     "optionalDependencies": {
