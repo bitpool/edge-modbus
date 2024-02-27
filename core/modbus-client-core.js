@@ -134,114 +134,108 @@
    })
  }
  
-//  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeOne = function (node, msg, cb, cberr) {
-//    const coreClient = de.biancoroyal.modbus.core.client
-//    node.client.readCoils(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
-//      coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
-//    }).catch(function (err) {
-//      coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
-//      node.modbusErrorHandling(err)
-//      node.warn("Core "+1)
-
-//    })
-//  }
+ de.biancoroyal.modbus.core.client.readModbusByFunctionCodeOne = function (node, msg, cb, cberr) {
+   const coreClient = de.biancoroyal.modbus.core.client
+   node.client.readCoils(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
+     coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
+   }).catch(function (err) {
+     coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
+     node.modbusErrorHandling(err)
+   })
+ }
  
-//  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeTwo = function (node, msg, cb, cberr) {
-//    const coreClient = de.biancoroyal.modbus.core.client
-//    node.client.readDiscreteInputs(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
-//      coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
-//    }).catch(function (err) {
-//      coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
-//      node.modbusErrorHandling(err)
-//      node.warn("Core "+2)
-//    })
-//  }
+ de.biancoroyal.modbus.core.client.readModbusByFunctionCodeTwo = function (node, msg, cb, cberr) {
+   const coreClient = de.biancoroyal.modbus.core.client
+   node.client.readDiscreteInputs(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
+     coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
+   }).catch(function (err) {
+     coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
+     node.modbusErrorHandling(err)
+   })
+ }
  
-//  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeThree = function (node, msg, cb, cberr) {
-//    const coreClient = de.biancoroyal.modbus.core.client
-//    node.client.readHoldingRegisters(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
-//      coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
-//    }).catch(function (err) {
-//      coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
-//      node.modbusErrorHandling(err)
-//      node.warn("Core "+3)
-//      node.warn("Error occurred: " + err.message);
-//    })
-//  }
+ de.biancoroyal.modbus.core.client.readModbusByFunctionCodeThree = function (node, msg, cb, cberr) {
+   const coreClient = de.biancoroyal.modbus.core.client
+   node.client.readHoldingRegisters(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
+     coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
+   }).catch(function (err) {
+     coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
+     node.modbusErrorHandling(err)
+   })
+ }
  
-//  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeFour = function (node, msg, cb, cberr) {
-//    const coreClient = de.biancoroyal.modbus.core.client
-//    node.client.readInputRegisters(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
-//      coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
-//    }).catch(function (err) {
-//      coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
-//      node.modbusErrorHandling(err)
-//      node.warn("Core "+4)
-//    })
-//  }
+ de.biancoroyal.modbus.core.client.readModbusByFunctionCodeFour = function (node, msg, cb, cberr) {
+   const coreClient = de.biancoroyal.modbus.core.client
+   node.client.readInputRegisters(parseInt(msg.payload.address), parseInt(msg.payload.quantity)).then(function (resp) {
+     coreClient.activateSendingOnSuccess(node, cb, cberr, resp, msg)
+   }).catch(function (err) {
+     coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
+     node.modbusErrorHandling(err)
+   })
+ }
 
-// Generic retry logic for Modbus read operations
-  function performModbusReadWithRetry(readOperation, args, maxRetries, retryTimeout, node, msg, cb, cberr) {
-    let retryCount = 0;
-    let isRequestInProcess = false;
+// // Generic retry logic for Modbus read operations
+//   function performModbusReadWithRetry(readOperation, args, maxRetries, retryTimeout, node, msg, cb, cberr) {
+//     let retryCount = 0;
+//     let isRequestInProcess = false;
 
-    const attemptRead = () => {
-      if (isRequestInProcess) {
-        node.warn("Previous request still in process. Skipping to avoid queuing.");
-        return;
-      }
-      isRequestInProcess = true;
+//     const attemptRead = () => {
+//       if (isRequestInProcess) {
+//         node.warn("Previous request still in process. Skipping to avoid queuing.");
+//         return;
+//       }
+//       isRequestInProcess = true;
 
-      readOperation(...args).then(resp => {
-        de.biancoroyal.modbus.core.client.activateSendingOnSuccess(node, cb, cberr, resp, msg);
-        isRequestInProcess = false;
-      }).catch(err => {
-        if ((err.message.includes("Port Not Open") || err.message.includes("Timed out")) && retryCount < maxRetries) {
-          console.warn(`Error occurred: ${err.message}, retrying attempt ${retryCount + 1} in ${retryTimeout}ms...`);
-          retryCount++;
-          setTimeout(() => {
-            isRequestInProcess = false;
-            attemptRead();
-          }, retryTimeout);
-        } else {
-          console.warn(`Error occurred after ${retryCount} retries: ${err.message}`);
-          de.biancoroyal.modbus.core.client.activateSendingOnFailure(node, cberr, new Error(err.message), msg);
-          isRequestInProcess = false;
-        }
-      });
-    };
+//       readOperation(...args).then(resp => {
+//         de.biancoroyal.modbus.core.client.activateSendingOnSuccess(node, cb, cberr, resp, msg);
+//         isRequestInProcess = false;
+//       }).catch(err => {
+//         if ((err.message.includes("Port Not Open") || err.message.includes("Timed out")) && retryCount < maxRetries) {
+//           console.warn(`Error occurred: ${err.message}, retrying attempt ${retryCount + 1} in ${retryTimeout}ms...`);
+//           retryCount++;
+//           setTimeout(() => {
+//             isRequestInProcess = false;
+//             attemptRead();
+//           }, retryTimeout);
+//         } else {
+//           console.warn(`Error occurred after ${retryCount} retries: ${err.message}`);
+//           de.biancoroyal.modbus.core.client.activateSendingOnFailure(node, cberr, new Error(err.message), msg);
+//           isRequestInProcess = false;
+//         }
+//       });
+//     };
 
-    attemptRead();
-  }
+//     attemptRead();
+//   }
   
 
-  // Refactored function for reading coils (FC1)
-  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeOne = function (node, msg, cb, cberr) {
-    const readOperation = node.client.readCoils.bind(node.client);
-    const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
-    performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
-  };
+//   // Refactored function for reading coils (FC1)
+//   de.biancoroyal.modbus.core.client.readModbusByFunctionCodeOne = function (node, msg, cb, cberr) {
+//     const readOperation = node.client.readCoils.bind(node.client);
+//     const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
+//     performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
+//   };
 
-  // Refactored function for reading discrete inputs (FC2)
-  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeTwo = function (node, msg, cb, cberr) {
-    const readOperation = node.client.readDiscreteInputs.bind(node.client);
-    const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
-    performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
-  };
+//   // Refactored function for reading discrete inputs (FC2)
+//   de.biancoroyal.modbus.core.client.readModbusByFunctionCodeTwo = function (node, msg, cb, cberr) {
+//     const readOperation = node.client.readDiscreteInputs.bind(node.client);
+//     const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
+//     performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
+//   };
 
-  // Refactored function for reading holding registers (FC3)
-  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeThree = function (node, msg, cb, cberr) {
-    const readOperation = node.client.readHoldingRegisters.bind(node.client);
-    const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
-    performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
-  };
+//   // Refactored function for reading holding registers (FC3)
+//   de.biancoroyal.modbus.core.client.readModbusByFunctionCodeThree = function (node, msg, cb, cberr) {
+//     const readOperation = node.client.readHoldingRegisters.bind(node.client);
+//     const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
+//     performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
+//   };
 
-  // Refactored function for reading input registers (FC4)
-  de.biancoroyal.modbus.core.client.readModbusByFunctionCodeFour = function (node, msg, cb, cberr) {
-    const readOperation = node.client.readInputRegisters.bind(node.client);
-    const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
-    performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
-  };
+//   // Refactored function for reading input registers (FC4)
+//   de.biancoroyal.modbus.core.client.readModbusByFunctionCodeFour = function (node, msg, cb, cberr) {
+//     const readOperation = node.client.readInputRegisters.bind(node.client);
+//     const args = [parseInt(msg.payload.address), parseInt(msg.payload.quantity)];
+//     performModbusReadWithRetry(readOperation, args, 3, 1000, node, msg, cb, cberr);
+//   };
 
  
  de.biancoroyal.modbus.core.client.sendCustomFunctionCode = function (node, msg, cb, cberr) {
@@ -253,7 +247,6 @@
    }).catch(function (err) {
      coreClient.activateSendingOnFailure(node, cberr, new Error(err.message), msg)
      node.modbusErrorHandling(err)
-     node.warn("Core "+5)
    })
  }
  
@@ -323,7 +316,6 @@
        coreClient.activateSendingOnFailure(node, cberr, err, msg)
        nodeLog(err.message)
        node.modbusErrorHandling(err)
-       node.warn("Core "+6)
      }
    }, delayTime)
  }
@@ -370,7 +362,6 @@
        coreClient.activateSendingOnFailure(node, cberr, err, msg)
        nodeLog(err.message)
        node.modbusErrorHandling(err)
-       node.warn("Core "+7)
      }
    }, delayTime)
  }
@@ -394,7 +385,6 @@
      } else {
        coreClient.activateSendingOnFailure(node, cberr, err, msg)
        node.modbusErrorHandling(err)
-       node.warn("Core "+8)
      }
    })
  }
@@ -417,7 +407,6 @@
        } else {
          coreClient.activateSendingOnFailure(node, cberr, err, msg)
          node.modbusErrorHandling(err)
-         node.warn("Core "+9)
        }
      })
    }
@@ -437,7 +426,6 @@
      } else {
        coreClient.activateSendingOnFailure(node, cberr, err, msg)
        node.modbusErrorHandling(err)
-       node.warn("Core "+10)
      }
    })
  }
@@ -460,7 +448,6 @@
        } else {
          coreClient.activateSendingOnFailure(node, cberr, err, msg)
          node.modbusErrorHandling(err)
-         node.warn("Core "+11)
        }
      })
    }
@@ -524,7 +511,6 @@
        coreClient.activateSendingOnFailure(node, cberr, err, msg)
        nodeLog(err.message)
        node.modbusErrorHandling(err)
-       node.warn("Core "+12)
      }
    }, delayTime)
  }

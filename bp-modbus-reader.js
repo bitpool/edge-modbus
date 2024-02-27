@@ -76,33 +76,7 @@ module.exports = function (RED) {
             mbBasics.setModbusError(node, modbusClient, err, origMsg)
             node.emit('modbusFlexGetterNodeError')
         }
-        // Constants for retry mechanism
-        // const RETRY_DELAY_MS = 1000; // Delay between retries in milliseconds
-        // const MAX_RETRIES = 5; // Maximum number of retry attempts
-        // let retryCount = 0; // Initialize retry count
-        // node.onModbusReadError = function (err, msg) {
-        //     const checkStateAndRetry = () => {
-        //         if (modbusClient.actualServiceState.value === 'connected') {
-        //             node.warn("in if current state: "+modbusClient.actualServiceState.value)
-        //             // State is connected, retry the Modbus operation
-        //             retryModbusOperation(msg);
-        //         } else {
-        //             // State is not OK, continue checking
-        //             //node.warn("current state: "+modbusClient.actualServiceState.value)
-        //             setTimeout(checkStateAndRetry, 1000); // Check again after 1 second
-        //         }
-        //     };
-        
-        //     // Start checking the state
-        //     checkStateAndRetry();
-        // };
-        
-        // function retryModbusOperation(origMsg) {
-        //     // Logic to re-emit the readModbus event or directly call the function initiating the Modbus request
-        //     modbusClient.emit('readModbus', origMsg, node.onModbusReadDone, node.onModbusReadError);
-        // }
 
-        //end of changes
         node.prepareMsg = function (msg) {
             if (typeof msg.payload === 'string') {
                 msg.payload = JSON.parse(msg.payload)

@@ -300,7 +300,6 @@ module.exports = function (RED) {
 
         node.client.on('error', (err) => {
           node.modbusErrorHandling(err)
-          node.warn("Here")
           mbBasics.setNodeStatusTo('error', node)
         })
 
@@ -437,7 +436,6 @@ module.exports = function (RED) {
         }
       } catch (err) {
         node.modbusErrorHandling(err)
-        node.warn("Or Here")
         return false
       }
 
@@ -468,7 +466,6 @@ module.exports = function (RED) {
       }
       if (err.errno && coreModbusClient.networkErrors.includes(err.errno)) {
         node.stateService.send('FAILURE')
-        node.warn("This is the one")
       }
     }
 
