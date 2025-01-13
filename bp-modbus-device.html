@@ -14,17 +14,17 @@
     category: "Bitpool Modbus",
 
     defaults: {
-      bpUnitName: {value: null, required: true},
-      bpModbusId: {value: "1", required: true},
+      bpUnitName: { value: null, required: true },
+      bpModbusId: { value: "1", required: true },
       bpRegisters: {
         value: []
       },
-      bpChkShowDateOnLabel: {value: true},
-      bpChkShowDebugWarnings: {value: true},
-      bpChkEnableTurboMode: {value: false},
-      bpDeviceDataSize: {value: 2},
-      bpSelectedTemplate: {value: null},
-      bpSourceTemplatesFromWeb: {value: false},
+      bpChkShowDateOnLabel: { value: true },
+      bpChkShowDebugWarnings: { value: true },
+      bpChkEnableTurboMode: { value: false },
+      bpDeviceDataSize: { value: 2 },
+      bpSelectedTemplate: { value: null },
+      bpSourceTemplatesFromWeb: { value: false },
     },
 
     inputs: 1,
@@ -60,10 +60,10 @@
           label: "Options"
         })
 
-      $("#node-input-reg-search-name").typedInput({type: 'str', types: [{icon: "fa fa-search"}]});
-      $("#node-input-reg-search-name-address").typedInput({type: 'str', types: [{icon: "fa fa-search"}]});
-      $("#node-input-bpUnitName").typedInput({type: 'str', types: ['str']})
-      $("#node-input-bpModbusId").typedInput({type: 'num', types: ['num']})
+      $("#node-input-reg-search-name").typedInput({ type: 'str', types: [{ icon: "fa fa-search" }] });
+      $("#node-input-reg-search-name-address").typedInput({ type: 'str', types: [{ icon: "fa fa-search" }] });
+      $("#node-input-bpUnitName").typedInput({ type: 'str', types: ['str'] })
+      $("#node-input-bpModbusId").typedInput({ type: 'num', types: ['num'] })
 
       $("#node-btn-apply-register-map").click(function () {
 
@@ -101,7 +101,7 @@
       });
       $("#node-input-bpModbusId").on('change', function (event, type, value) {
         this.bpModbusId = value
-      });      
+      });
 
       $.getJSON('devices', function (data) {
         bpRegisterMap = data
@@ -114,9 +114,9 @@
             isInList = true
           }
         }
-        if(isInList){
+        if (isInList) {
           deviceList.append($("<option></option>").val('DEVICE_UNKNOWN').text('Select a template...'));
-        }else{
+        } else {
           deviceList.append($("<option selected></option>").val('DEVICE_UNKNOWN').text('Select a template...'));
         }
         for (var i = 0; i < bpRegisterMap.length; i++) {
@@ -146,39 +146,39 @@
             let optElem = '<option selected></option>'
 
             $('<label/>').text("Name").appendTo(regName);
-            var registerName = $('<input/>', {class: "node-input-register-name", type: "text", placeholder: "Register Name"}).appendTo(regName)
+            var registerName = $('<input/>', { class: "node-input-register-name", type: "text", placeholder: "Register Name" }).appendTo(regName)
 
             $('<label/>').text("Address").appendTo(regAddress);
-            var registerAddress = $('<input/>', {class: "node-input-register-address", type: "text", placeholder: "100"}).appendTo(regAddress)
+            var registerAddress = $('<input/>', { class: "node-input-register-address", type: "text", placeholder: "100" }).appendTo(regAddress)
 
             $('<label/>').text("Code").appendTo(regFunctionCode);
 
-            var registerFunctionCode = $('<select/>', {class: "node-input-function-code"}).appendTo(regFunctionCode);
+            var registerFunctionCode = $('<select/>', { class: "node-input-function-code" }).appendTo(regFunctionCode);
             for (var i = 0; i < modbusFuncCodesOpts.length; i++) {
               registerFunctionCode.append($('<option></option>').val(modbusFuncCodesOpts[i].optValue).text(modbusFuncCodesOpts[i].optText));
             }
 
             $('<label/>').text("Multiplier").appendTo(regMultiplier);
-            var registerMultiplier = $('<input/>', {class: "node-input-register-multiplier", type: "text", placeholder: "1.00"}).appendTo(regMultiplier)
+            var registerMultiplier = $('<input/>', { class: "node-input-register-multiplier", type: "text", placeholder: "1.00" }).appendTo(regMultiplier)
 
             $('<label/>').text("Format").appendTo(regFormat);
-            var registerFormat = $('<select/>', {class: "node-input-register-format"}).appendTo(regFormat);
+            var registerFormat = $('<select/>', { class: "node-input-register-format" }).appendTo(regFormat);
             for (var i = 0; i < modbusRegDataTypeOpts.length; i++) {
               registerFormat.append($('<option></option>').val(modbusRegDataTypeOpts[i].optValue).text(modbusRegDataTypeOpts[i].optText));
             }
             $('<label/>').text("Unit Name").appendTo(regUom);
-            var registerUom = $('<select/>', {class: "node-input-register-uom"}).appendTo(regUom);
+            var registerUom = $('<select/>', { class: "node-input-register-uom" }).appendTo(regUom);
             for (var i = 0; i < modbusRegUomOpts.length; i++) {
               registerUom.append($('<option></option>').val(modbusRegUomOpts[i].optValue).text(modbusRegUomOpts[i].optText));
             }
             $('<label/>').text("Unit Scale").appendTo(regScale);
-            var registerScale = $('<select/>', {class: "node-input-register-scale"}).appendTo(regScale);
+            var registerScale = $('<select/>', { class: "node-input-register-scale" }).appendTo(regScale);
             for (var i = 0; i < modbusRegScaleOpts.length; i++) {
               registerScale.append($('<option></option>').val(modbusRegScaleOpts[i].optValue).text(modbusRegScaleOpts[i].optText));
             }
 
             $('<label/>').text("Size").appendTo(regSize);
-            var registerSize = $('<input/>', {class: "node-input-register-size", type: "text", placeholder: "1"}).appendTo(regSize)
+            var registerSize = $('<input/>', { class: "node-input-register-size", type: "text", placeholder: "1" }).appendTo(regSize)
 
             registerName.val(registerMap.name);
             registerAddress.val(registerMap.address);
@@ -212,7 +212,7 @@
                 $("#node-input-bpRegisters-container").editableList('empty');
                 document.getElementById('node-input-reg-block-count').innerHTML = 0
               },
-            },  
+            },
             {
               label: "upload",
               icon: "fa fa-cloud-upload",
@@ -223,107 +223,107 @@
 
                 input.onchange = _ => {
                   const reader = new FileReader();
-                  const files =  Array.from(input.files);
+                  const files = Array.from(input.files);
                   reader.readAsText(files[0]);
 
                   reader.onload = function (e) {
                     const jsonFile = JSON.parse(e.target.result);
-                    if(jsonFile.schema && jsonFile.schema == "BP_MODBUS_V1"){
+                    if (jsonFile.schema && jsonFile.schema == "BP_MODBUS_V1") {
 
                       $("#node-input-bpUnitName").typedInput('value', jsonFile.name)
 
                       let modId = jsonFile.modbusId
-                      
-                      if(typeof modId != 'number' || isNaN(modId)){
+
+                      if (typeof modId != 'number' || isNaN(modId)) {
                         modId = parseInt(modId)
                       }
-                      
+
                       $("#node-input-bpModbusId").typedInput('value', modId)
 
                       const registers = jsonFile.registers;
-                      if(Array.isArray(registers)) {
+                      if (Array.isArray(registers)) {
                         let validMaps = []
                         for (let x in registers) {
                           let map = registers[x]
 
-                          try{
+                          try {
                             let cntOfKeys = Object.keys(map).length
                             let allKeys = ['address', 'fnCode', 'multiplier', 'format', 'size', 'scale', 'uom', 'name']
                             let lenKeys = allKeys.length
 
-                            if(cntOfKeys == lenKeys){
+                            if (cntOfKeys == lenKeys) {
                               let foundAllKeys = 0
 
                               for (let key in map) {
-                                if(allKeys.includes(key)){
-                                    delete allKeys[allKeys.indexOf(key)]
-                                    foundAllKeys++
+                                if (allKeys.includes(key)) {
+                                  delete allKeys[allKeys.indexOf(key)]
+                                  foundAllKeys++
                                 }
                               }
-                              if(foundAllKeys == lenKeys){
-                                  for (let key in map) {
-                                    let value = map[key]
+                              if (foundAllKeys == lenKeys) {
+                                for (let key in map) {
+                                  let value = map[key]
 
-                                    if (key == 'address'){
-                                      // Note - address can be (eg [12,23,53...] or ["0x0A","0X0aF"...])
-                                      if(typeof value != 'number'){
-                                        if(value.match(/^(0[xX]){1}[0-9A-Fa-f]+$/) != null){
-                                          let convValue =  parseInt(value, 16)
-                                          if(isNaN(convValue)){
-                                            throw `Property '${key}' data cannot be converted to a number`  
-                                          }else if(typeof convValue != 'number'){
-                                            throw `Property '${key}' data must be a number, but is '${typeof convValue}'`  
-                                          }
-                                          map[key] = convValue
-                                        }else{
-                                          throw `Property '${key}' data must be a number, but is '${typeof value}'`  
+                                  if (key == 'address') {
+                                    // Note - address can be (eg [12,23,53...] or ["0x0A","0X0aF"...])
+                                    if (typeof value != 'number') {
+                                      if (value.match(/^(0[xX]){1}[0-9A-Fa-f]+$/) != null) {
+                                        let convValue = parseInt(value, 16)
+                                        if (isNaN(convValue)) {
+                                          throw `Property '${key}' data cannot be converted to a number`
+                                        } else if (typeof convValue != 'number') {
+                                          throw `Property '${key}' data must be a number, but is '${typeof convValue}'`
                                         }
+                                        map[key] = convValue
+                                      } else {
+                                        throw `Property '${key}' data must be a number, but is '${typeof value}'`
                                       }
-
-                                    }else if (key == 'multiplier' || key == 'size'){
-                                      if(typeof value != 'number'){
-                                        if(value.match(/^[0-9\.]+$/) != null){
-                                          let convValue =  parseFloat(value)
-                                          if(isNaN(convValue)){
-                                            throw `Property '${key}' data cannot be converted to a number`  
-                                          }else if(typeof convValue != 'number'){
-                                            throw `Property '${key}' data must be a number, but is '${typeof convValue}'`  
-                                          }
-                                          map[key] = convValue                                        
-                                        }else{
-                                          throw `Property '${key}' data must be a number, but is '${typeof value}'`  
-                                        }
-                                      }
-
-                                    }else if(key == 'scale' || key == 'uom' || key == 'fnCode' || key == 'format'){ 
-                                      if(typeof value == 'string'){
-                                        if(value.match(/^[A-Z0-9_]+$/) == null){
-                                          throw `Property '${key}' data must be a string [A-Z0-9_], but is '${value}'`  
-                                        }
-                                      }else{
-                                        throw `Property '${key}' data must be a string, but is '${typeof value}'`  
-                                      }
-
-                                    }else if(key == 'name' ){ 
-                                      if(typeof value == 'string'){
-                                        if (value.match(/^[ -~]+$/) == null){
-                                          throw `Property '${key}' data must be a string with printable characters, but is '${value}'`  
-                                        }
-                                      }else{
-                                        throw `Property '${key}' data must be a string, but is '${typeof value}'`  
-                                      }
-
-                                    }else{
-                                      throw `Property '${key}' data is of incorrect data type '${typeof value}'`  
                                     }
+
+                                  } else if (key == 'multiplier' || key == 'size') {
+                                    if (typeof value != 'number') {
+                                      if (value.match(/^[0-9\.]+$/) != null) {
+                                        let convValue = parseFloat(value)
+                                        if (isNaN(convValue)) {
+                                          throw `Property '${key}' data cannot be converted to a number`
+                                        } else if (typeof convValue != 'number') {
+                                          throw `Property '${key}' data must be a number, but is '${typeof convValue}'`
+                                        }
+                                        map[key] = convValue
+                                      } else {
+                                        throw `Property '${key}' data must be a number, but is '${typeof value}'`
+                                      }
+                                    }
+
+                                  } else if (key == 'scale' || key == 'uom' || key == 'fnCode' || key == 'format') {
+                                    if (typeof value == 'string') {
+                                      if (value.match(/^[A-Z0-9_]+$/) == null) {
+                                        throw `Property '${key}' data must be a string [A-Z0-9_], but is '${value}'`
+                                      }
+                                    } else {
+                                      throw `Property '${key}' data must be a string, but is '${typeof value}'`
+                                    }
+
+                                  } else if (key == 'name') {
+                                    if (typeof value == 'string') {
+                                      if (value.match(/^[ -~]+$/) == null) {
+                                        throw `Property '${key}' data must be a string with printable characters, but is '${value}'`
+                                      }
+                                    } else {
+                                      throw `Property '${key}' data must be a string, but is '${typeof value}'`
+                                    }
+
+                                  } else {
+                                    throw `Property '${key}' data is of incorrect data type '${typeof value}'`
                                   }
-                                  // All checked OK, so add...
-                                  validMaps.push(map)
-                              }else{
+                                }
+                                // All checked OK, so add...
+                                validMaps.push(map)
+                              } else {
                                 throw "Incorrect number of keys or invalid key name"
                               }
                             }
-                          }catch(err) {
+                          } catch (err) {
                             // Let debug know we had issues importing record
                             console.log("Bad register map record not imported [" + err + "]")
                             console.log(map)
@@ -336,8 +336,8 @@
                         }
                         document.getElementById('node-input-reg-block-count').innerHTML = validMaps.length
                       }
-                    } 
-                  } 
+                    }
+                  }
                 };
                 input.click();
               },
@@ -364,7 +364,7 @@
                   };
                   mapItems.push(mapItem);
                 });
-   
+
                 let unitName = $("#node-input-bpUnitName").val()
                 let modbusId = $("#node-input-bpModbusId").val()
                 let jBlock = {
@@ -383,11 +383,11 @@
                   a.download = fileName;
                   a.click();
                 }
-               
-                let dlFilename = `bp-modbus-${unitName}-${modbusId}`.replace(/[\W_]+/g,"-").toLowerCase();  
-                download(jMap, `${dlFilename}.json` , "text/plain");
+
+                let dlFilename = `bp-modbus-${unitName}-${modbusId}`.replace(/[\W_]+/g, "-").toLowerCase();
+                download(jMap, `${dlFilename}.json`, "text/plain");
               },
-            },            
+            },
             {
               label: "view",
               icon: "fa fa-share",
@@ -415,7 +415,7 @@
                     .replaceAll(/}\]/gi, "}\n]")
                     .replaceAll(/},/gi, "},\n")
                     .replaceAll(/{/gi, "  {")
-                ], {type: 'text/json'});
+                ], { type: 'text/json' });
                 window.open(URL.createObjectURL(oMyBlob));
               },
             }
@@ -451,8 +451,8 @@
       var height = size.height;
       $('#node-input-bpRegisters-container').css("height", (height - 300) + "px");
       $("li.red-ui-editableList-item-removable:odd").css({
-        "background-color":"#F5F5F5"
-        });
+        "background-color": "#F5F5F5"
+      });
     }
   })
   function filterByName() {
@@ -556,76 +556,76 @@
 
 <script type="text/javascript">
   var modbusFuncCodesOpts = [
-    {optValue: "F1_READ_COILS", optText: "FC1: Read Status Coils"},
-    {optValue: "F2_INPUT_COILS", optText: "FC2: Input Status Colis"},
-    {optValue: "F3_HOLDING_REGS", optText: "FC3: Holding Registers"},
-    {optValue: "F4_INPUT_REGS", optText: "FC4: Input Registers"}
+    { optValue: "F1_READ_COILS", optText: "FC1: Read Status Coils" },
+    { optValue: "F2_INPUT_COILS", optText: "FC2: Input Status Coils" },
+    { optValue: "F3_HOLDING_REGS", optText: "FC3: Holding Registers" },
+    { optValue: "F4_INPUT_REGS", optText: "FC4: Input Registers" }
   ];
   var modbusRegDataTypeOpts = [
-    {optValue: "8BIT_INT", optText: "8bit Integer"},
-    {optValue: "8BIT_UINT", optText: "8bit Unsigned Integer"},
-    {optValue: "16BIT_INT_HI_FIRST", optText: "16bit Integer (12)"},
-    {optValue: "16BIT_INT_LOW_FIRST", optText: "16bit Integer (21)"},
-    {optValue: "16BIT_UINT_HI_FIRST", optText: "16bit Unsigned Integer (12)"},
-    {optValue: "16BIT_UINT_LOW_FIRST", optText: "16bit Unsigned Integer (21)"},
-    {optValue: "32BIT_FLOAT_1234", optText: "32bit Float (1234)"},
-    {optValue: "32BIT_FLOAT_4321", optText: "32bit Float (4321)"},
-    {optValue: "32BIT_FLOAT_2143", optText: "32bit Float (2143)"},
-    {optValue: "32BIT_FLOAT_3412", optText: "32bit Float (3412)"},
-    {optValue: "32BIT_INT_1234", optText: "32bit Integer (1234)"},
-    {optValue: "32BIT_INT_4321", optText: "32bit Integer (4321)"},
-    {optValue: "32BIT_INT_2143", optText: "32bit Integer (2143)"},
-    {optValue: "32BIT_INT_3412", optText: "32bit Integer (3412)"},
-    {optValue: "32BIT_UINT_1234", optText: "32bit Unsigned Integer (1234)"},
-    {optValue: "32BIT_UINT_4321", optText: "32bit Unsigned Integer (4321)"},
-    {optValue: "32BIT_UINT_2143", optText: "32bit Unsigned Integer (2143)"},
-    {optValue: "32BIT_UINT_3412", optText: "32bit Unsigned Integer (3412)"},
-    {optValue: "64BIT_INT_12345678", optText: "64Bit Integer (12345678)"},
-    {optValue: "64BIT_INT_56781234", optText: "64Bit Integer (56781234)"},
-    {optValue: "64BIT_UINT_12345678", optText: "64Bit Unsigned Integer (12345678)"},
-    {optValue: "64BIT_UINT_56781234", optText: "64Bit Unsigned Integer (56781234)"},
-    {optValue: "ASCII", optText: "ASCII String"}
+    { optValue: "8BIT_INT", optText: "8bit Integer" },
+    { optValue: "8BIT_UINT", optText: "8bit Unsigned Integer" },
+    { optValue: "16BIT_INT_HI_FIRST", optText: "16bit Integer (12)" },
+    { optValue: "16BIT_INT_LOW_FIRST", optText: "16bit Integer (21)" },
+    { optValue: "16BIT_UINT_HI_FIRST", optText: "16bit Unsigned Integer (12)" },
+    { optValue: "16BIT_UINT_LOW_FIRST", optText: "16bit Unsigned Integer (21)" },
+    { optValue: "32BIT_FLOAT_1234", optText: "32bit Float (1234)" },
+    { optValue: "32BIT_FLOAT_4321", optText: "32bit Float (4321)" },
+    { optValue: "32BIT_FLOAT_2143", optText: "32bit Float (2143)" },
+    { optValue: "32BIT_FLOAT_3412", optText: "32bit Float (3412)" },
+    { optValue: "32BIT_INT_1234", optText: "32bit Integer (1234)" },
+    { optValue: "32BIT_INT_4321", optText: "32bit Integer (4321)" },
+    { optValue: "32BIT_INT_2143", optText: "32bit Integer (2143)" },
+    { optValue: "32BIT_INT_3412", optText: "32bit Integer (3412)" },
+    { optValue: "32BIT_UINT_1234", optText: "32bit Unsigned Integer (1234)" },
+    { optValue: "32BIT_UINT_4321", optText: "32bit Unsigned Integer (4321)" },
+    { optValue: "32BIT_UINT_2143", optText: "32bit Unsigned Integer (2143)" },
+    { optValue: "32BIT_UINT_3412", optText: "32bit Unsigned Integer (3412)" },
+    { optValue: "64BIT_INT_12345678", optText: "64Bit Integer (12345678)" },
+    { optValue: "64BIT_INT_56781234", optText: "64Bit Integer (56781234)" },
+    { optValue: "64BIT_UINT_12345678", optText: "64Bit Unsigned Integer (12345678)" },
+    { optValue: "64BIT_UINT_56781234", optText: "64Bit Unsigned Integer (56781234)" },
+    { optValue: "ASCII", optText: "ASCII String" }
   ];
   var modbusRegUomOpts = [
-    {optValue: "NONE", optText: "None"},
-    {optValue: "VOLTAGE_V", optText: "Volts (V)"},
-    {optValue: "CURRENT_A", optText: "Amperes (A)"},
-    {optValue: "POWER_ACTIVE_P", optText: "Watts (W)"},
-    {optValue: "POWER_REACTIVE_Q", optText: "Voltampere Reactive (var)"},
-    {optValue: "POWER_APPARENT_S", optText: "Voltampere (VA)"},
-    {optValue: "POWER_FACTOR", optText: "Power Factor"},
-    {optValue: "ENERGY_ACTIVE_P", optText: "Watt Hour (Wh)"},
-    {optValue: "ENERGY_REACTIVE_Q", optText: "Voltampere Reactive Hour (varh)"},
-    {optValue: "ENERGY_APPARENT_S", optText: "Voltampere  Hour (VAh)"},
-    {optValue: "FREQUENCY_HZ", optText: "Hertz (Hz)"},
-    {optValue: "TEMPERATURE_C", optText: "Celsius (Â°C)"},
-    {optValue: "TEMPERATURE_F", optText: "Farenheit (Â°F)"},
-    {optValue: "VOLTAGE_PHASE_SEQ", optText: "Voltage Phase Sequence"},
-    {optValue: "PERCENT", optText: "Percent (%)"},
-    {optValue: "RPM", optText: "Revolutions per Minute"},
-    {optValue: "VOLUME_M3", optText: "Cubic Meters (mÂ³)"},
-    {optValue: "FLOW_M3_PER_SEC", optText: "Cubic Meters per Second (mÂ³/s)"},
-    {optValue: "FLOW_M3_PER_HOUR", optText: "Cubic Meters per Hour (mÂ³/h)"},
-    {optValue: "VOLUME_LITERS", optText: "Liters (L)"},
-    {optValue: "FLOW_LITERS_PER_SECS", optText: "Liters per Seconds (L/s)"},
-    {optValue: "FLOW_LITERS_PER_HOUR", optText: "Liters per Seconds (L/h)"},
-    {optValue: "PRESSURE_BAR", optText: "Pressure Bars (bar)"},
-    {optValue: "PRESSURE_PASCAL", optText: "Pressure Pascal (Pa)"},
-    {optValue: "TIME_MSECS", optText: "Milliseconds (ms)"},
-    {optValue: "TIME_SECS", optText: "Seconds (s)"},
-    {optValue: "TIME_HOUR", optText: "Hours (h)"},
-    {optValue: "TIME_DAY", optText: "Days (d)"},
-    {optValue: "TIME_WEEK", optText: "Week (wk)"},
-    {optValue: "TIME_MONTH", optText: "Month (mth)"},
-    {optValue: "TIME_YEAR", optText: "Year (yr)"},
-    {optValue: "BINARY", optText: "Binary Data"},
+    { optValue: "NONE", optText: "None" },
+    { optValue: "VOLTAGE_V", optText: "Volts (V)" },
+    { optValue: "CURRENT_A", optText: "Amperes (A)" },
+    { optValue: "POWER_ACTIVE_P", optText: "Watts (W)" },
+    { optValue: "POWER_REACTIVE_Q", optText: "Voltampere Reactive (var)" },
+    { optValue: "POWER_APPARENT_S", optText: "Voltampere (VA)" },
+    { optValue: "POWER_FACTOR", optText: "Power Factor" },
+    { optValue: "ENERGY_ACTIVE_P", optText: "Watt Hour (Wh)" },
+    { optValue: "ENERGY_REACTIVE_Q", optText: "Voltampere Reactive Hour (varh)" },
+    { optValue: "ENERGY_APPARENT_S", optText: "Voltampere  Hour (VAh)" },
+    { optValue: "FREQUENCY_HZ", optText: "Hertz (Hz)" },
+    { optValue: "TEMPERATURE_C", optText: "Celsius (Â°C)" },
+    { optValue: "TEMPERATURE_F", optText: "Farenheit (Â°F)" },
+    { optValue: "VOLTAGE_PHASE_SEQ", optText: "Voltage Phase Sequence" },
+    { optValue: "PERCENT", optText: "Percent (%)" },
+    { optValue: "RPM", optText: "Revolutions per Minute" },
+    { optValue: "VOLUME_M3", optText: "Cubic Meters (mÂ³)" },
+    { optValue: "FLOW_M3_PER_SEC", optText: "Cubic Meters per Second (mÂ³/s)" },
+    { optValue: "FLOW_M3_PER_HOUR", optText: "Cubic Meters per Hour (mÂ³/h)" },
+    { optValue: "VOLUME_LITERS", optText: "Liters (L)" },
+    { optValue: "FLOW_LITERS_PER_SECS", optText: "Liters per Seconds (L/s)" },
+    { optValue: "FLOW_LITERS_PER_HOUR", optText: "Liters per Seconds (L/h)" },
+    { optValue: "PRESSURE_BAR", optText: "Pressure Bars (bar)" },
+    { optValue: "PRESSURE_PASCAL", optText: "Pressure Pascal (Pa)" },
+    { optValue: "TIME_MSECS", optText: "Milliseconds (ms)" },
+    { optValue: "TIME_SECS", optText: "Seconds (s)" },
+    { optValue: "TIME_HOUR", optText: "Hours (h)" },
+    { optValue: "TIME_DAY", optText: "Days (d)" },
+    { optValue: "TIME_WEEK", optText: "Week (wk)" },
+    { optValue: "TIME_MONTH", optText: "Month (mth)" },
+    { optValue: "TIME_YEAR", optText: "Year (yr)" },
+    { optValue: "BINARY", optText: "Binary Data" },
   ];
   var modbusRegScaleOpts = [
-    {optValue: "NONE", optText: "None"},
-    {optValue: "MICRO", optText: "Micro (Âµ) "},
-    {optValue: "MILLI", optText: "Milli (m)"},
-    {optValue: "KILO", optText: "Kilo (K)"},
-    {optValue: "MEGA", optText: "Mega (M)"},
-    {optValue: "GIGA", optText: "Giga (G)"},
+    { optValue: "NONE", optText: "None" },
+    { optValue: "MICRO", optText: "Micro (Âµ) " },
+    { optValue: "MILLI", optText: "Milli (m)" },
+    { optValue: "KILO", optText: "Kilo (K)" },
+    { optValue: "MEGA", optText: "Mega (M)" },
+    { optValue: "GIGA", optText: "Giga (G)" },
   ];
 </script>
